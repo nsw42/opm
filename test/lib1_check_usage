@@ -13,10 +13,14 @@ if [ $? -ne $EXPECTED_EXIT_CODE ]; then
   exit 1
 fi
 
-if grep -q "Usage.*subcommand" < $ERR; then :; else
+PATTERN="Usage.*subcommand"
+if grep -q $PATTERN $ERR; then :; else
   echo $0 $ARG No usage text found >> $LOGFILE
   cat $ERR >> $LOGFILE
   exit 1
 fi
+
+echo "$0 $ARG found expected usage text:" >> $LOGFILE
+grep $PATTERN $ERR >> $LOGFILE
 
 exit 0

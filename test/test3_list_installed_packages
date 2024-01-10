@@ -10,12 +10,22 @@ if [ $(uname) = Darwin ]; then
   # This is awkward: there are no guarantees about what will be installed.
   # For now, be happy with *something* on stdout and nothing written to stderr
   if [ -z "$(cat $OUT)" -o -n "$(cat $ERR)" ]; then
-    echo "$0 No output on stdout or unexpected output on stderr" >> $LOGFILE
+    echo "No output on stdout or unexpected output on stderr" >> $LOGFILE
     echo "--- begin stderr ---" >> $LOGFILE
     cat $ERR >> $LOGFILE
     echo "--- end stderr ---" >> $LOGFILE
     exit 1
   fi
+
+  echo "stdout was non-empty:" >> $LOGFILE
+  echo "--- begin stdout head ---" >> $LOGFILE
+  head -n 5 $OUT >> $LOGFILE
+  echo "--- end stdout head ---" >> $LOGFILE
+  echo "stderr was empty:" >> $LOGFILE
+  echo "--- begin stderr ---" >> $LOGFILE
+  cat $ERR >> $LOGFILE
+  echo "--- end stderr ---" >> $LOGFILE
+  exit 0
 else
   if [ -f /etc/alpine-release ]; then
     expected_package=busybox
@@ -23,15 +33,16 @@ else
     # Debian or Ubuntu
     expected_package=debianutils
   else
-    echo "$0 Unrecognised OS encountered" >> $LOGFILE
+    echo "Unrecognised OS encountered" >> $LOGFILE
     exit 1
   fi
 
   if grep -q "^${expected_package}.*installed" $OUT; then
     # All good
-    :
+    echo "Found expected package $expected_package in output:" >> $LOGFILE
+    grep "^${expected_package}.*installed" $OUT >> $LOGFILE
   else
-    echo "$0 Expected package $expected_package not found" >> $LOGFILE
+    echo "Expected package $expected_package not found" >> $LOGFILE
     echo "--- begin stdout ---" >> $LOGFILE
     cat $OUT >> $LOGFILE
     echo "--- end stdout ---" >> $LOGFILE

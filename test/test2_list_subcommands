@@ -6,9 +6,10 @@ OUT=$TMPDIR/test2.out
 $BINDIR/opm help > $OUT
 
 for expected_subcmd in help install list uninstall; do
-  awk -v cmd=$expected_subcmd '($1 == cmd) {found=1} END {if (found) exit 0; else exit 1}' $OUT
+  awk -v cmd=$expected_subcmd '($1 == cmd) {found=1; print "Found expected subcommand " cmd ":"; print;} END {if (found) exit 0; else exit 1}' $OUT >> $LOGFILE
+
   if [ $? != 0 ]; then
-    echo $0 Subcommand $expected_subcmd not found in output >> $LOGFILE
+    echo Subcommand $expected_subcmd not found in output >> $LOGFILE
     echo "--- begin output ---" >> $LOGFILE
     cat $OUT >> $LOGFILE
     echo "--- end output ---" >> $LOGFILE

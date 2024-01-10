@@ -8,12 +8,16 @@ else
   FAIL=FAIL
 fi
 
+LOGDATEFMT="+%Y-%m-%d %H:%M:%S"
 
-echo $(date) Tests started >> $LOGFILE
+echo $(date "$LOGDATEFMT") Tests started >> $LOGFILE
 
 for t in $TESTDIR/test*; do
+  echo "$(date "$LOGDATEFMT") Running $t"  >> $LOGFILE
   $t && result=$PASS || result=$FAIL
   printf "  %-60s  %s\n"  $t  $result
+  echo >> $LOGFILE
+  echo >> $LOGFILE
 done
 
-echo $(date) Tests finished >> $LOGFILE
+echo $(date "$LOGDATEFMT") Tests finished >> $LOGFILE
