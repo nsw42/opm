@@ -42,4 +42,5 @@ echo $f
 LOGLEAF=$(basename $f)
 LOGLEAF=$(echo $LOGLEAF | sed 's/.sh$/.log/')
 export LOGFILE=$LOGDIR/$LOGLEAF
+echo > $LOGFILE
 "$f"

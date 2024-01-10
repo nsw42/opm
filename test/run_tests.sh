@@ -9,7 +9,7 @@ else
 fi
 
 
-echo $(date) Tests started > $LOGFILE
+echo $(date) Tests started >> $LOGFILE
 
 for t in $TESTDIR/test*; do
   $t && result=$PASS || result=$FAIL

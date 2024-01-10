@@ -2,7 +2,7 @@
 
 IMAGE=$1
 
-docker pull "$IMAGE" > $LOGFILE 2>&1
+docker pull "$IMAGE" >> $LOGFILE 2>&1
 
 cd $TESTDIR/.. 
 docker run \

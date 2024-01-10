@@ -32,6 +32,7 @@ for f in $TESTDIR/os_*.sh; do
   LOGLEAF=$(basename $f)
   LOGLEAF=$(echo $LOGLEAF | sed 's/.sh$/.log/')
   export LOGFILE=$LOGDIR/$LOGLEAF
+  echo > $LOGFILE
   "$f"
   echo "$sep"
   echo
