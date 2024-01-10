@@ -23,16 +23,23 @@ export TMPDIR=$TESTDIR/tmp
 mkdir -p $LOGDIR
 mkdir -p $TMPDIR
 
-# sep=70*"="
-sep="=========="
-sep="${sep}${sep}${sep}${sep}${sep}${sep}${sep}"
+if [ -z "$1" ]; then
+  echo Usage: $0 os_foo.sh
+  exit 1
+fi
 
-for f in $TESTDIR/os_*.sh; do
-  echo $f
-  LOGLEAF=$(basename $f)
-  LOGLEAF=$(echo $LOGLEAF | sed 's/.sh$/.log/')
-  export LOGFILE=$LOGDIR/$LOGLEAF
-  "$f"
-  echo "$sep"
-  echo
-done
+if [ -x ./$1 ]; then
+  # full path was provided
+  f=./$1
+elif [ -x $TESTDIR/$1 ]; then
+  f=$TESTDIR/$1
+else
+  echo Cannot find or execute $1
+  exit 1
+fi
+
+echo $f
+LOGLEAF=$(basename $f)
+LOGLEAF=$(echo $LOGLEAF | sed 's/.sh$/.log/')
+export LOGFILE=$LOGDIR/$LOGLEAF
+"$f"
