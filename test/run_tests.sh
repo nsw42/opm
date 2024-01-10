@@ -12,7 +12,7 @@ fi
 echo $(date) Tests started > $LOGFILE
 
 for t in $TESTDIR/test*; do
-  $t $BINDIR $LOGFILE && result=$PASS || result=$FAIL
+  $t && result=$PASS || result=$FAIL
   printf "  %-60s  %s\n"  $t  $result
 done
 
