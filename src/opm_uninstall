@@ -1,0 +1,14 @@
+#! /bin/sh
+# opm uninstall: Uninstall one or more packages
+
+if [ "$1" = "--list-commands" ]; then
+  printf "  %-10s Uninstall one or more packages\n"  uninstall
+  exit 0
+fi
+
+if [ "$1" = "-h" -o "$1" = "--help" ]; then
+  echo Uninstall help
+  exit 0
+fi
+
+echo TODO

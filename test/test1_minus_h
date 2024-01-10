@@ -1,0 +1,4 @@
+#! /bin/sh
+# Running with -h should result in minimal help text being shown on stderr, and a zero exit code
+
+$TESTDIR/lib1_check_usage "$0" "-h" 0

@@ -1,0 +1,5 @@
+#! /bin/sh
+# Running without arguments should result in minimal help text being shown on stderr, and a non-zero exit code
+
+$TESTDIR/lib1_check_usage "$0" "" 1
+

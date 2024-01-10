@@ -1,0 +1,26 @@
+#! /bin/sh
+
+short_help() {
+  echo "Usage: $0 [OPTIONS] subcommand"
+  echo "See  $0 help  to list available commands"
+}
+
+if [ -z "$1" -o "$1" = "-h" -o "$1" = "--help" ]; then
+  short_help > /dev/stderr
+  [ -z "$1" ] && code=1 || code=0
+  exit $code
+fi
+
+# TODO: Global arguments before subcommand
+
+cmd=$1
+shift
+src_dir=$(dirname $0)
+subfile="${src_dir}/opm_$cmd"
+if [ ! -x "$subfile" ]; then
+  echo "Unrecognised subcommand '$cmd'."
+  echo "See   $0 help   to list available commands"
+  exit 1
+fi
+
+exec "$subfile" "$@"

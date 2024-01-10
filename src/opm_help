@@ -1,0 +1,28 @@
+#! /bin/sh
+# opm help: List all available subcommands
+
+if [ "$1" = "--list-commands" ]; then
+  printf "  %-10s Show this list of opm subcommands\n"  help
+  exit 0
+fi
+
+if [ "$1" ]; then
+  # Invoked as opm help subcommand
+  # Does subcommand exist?
+  subfile=$(dirname $0)/opm_$1
+  if [ -x "$subfile" ]; then
+    exec "$subfile" --help
+  else
+    echo "$1 is not a recognised opm subcommand. See  opm help  for supported commands"
+    exit 1
+  fi
+fi
+
+
+echo Available opm subcommands are:
+for f in $(dirname $0)/opm_*; do
+  $f  --list-commands
+done
+
+echo
+echo "Run  opm subcommand --help  for more information about that specific command"

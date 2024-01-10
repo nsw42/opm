@@ -1,0 +1,7 @@
+#! /bin/sh
+#
+# Run the test suite in an Alpine Linux docker image
+
+# TODO: Multiple OS versions?
+
+$TESTDIR/run_tests_in_docker.sh alpine:latest

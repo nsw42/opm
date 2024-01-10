@@ -1,0 +1,22 @@
+#! /bin/sh
+# When invoked with the right arguments, a minimal help message should be echoed to stderr.
+
+TESTNAME=$1
+ARG=$2  # may be empty
+EXPECTED_EXIT_CODE=$3
+
+ERR=$TMPDIR/test1.err
+
+$BINDIR/opm $ARG 2> $ERR
+if [ $? -ne $EXPECTED_EXIT_CODE ]; then
+  echo $0 $ARG expected exit code $EXPECTED_EXIT_CODE, got $? >> $LOGFILE
+  exit 1
+fi
+
+if grep -q "Usage.*subcommand" < $ERR; then :; else
+  echo $0 $ARG No usage text found >> $LOGFILE
+  cat $ERR >> $LOGFILE
+  exit 1
+fi
+
+exit 0

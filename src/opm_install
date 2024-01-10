@@ -1,0 +1,14 @@
+#! /bin/sh
+# opm install: Install one or more packages
+
+if [ "$1" = "--list-commands" ]; then
+  printf "  %-10s Install one or more packages\n"  install
+  exit 0
+fi
+
+if [ "$1" = "-h" -o "$1" = "--help" ]; then
+  echo Install help
+  exit 0
+fi
+
+echo TODO

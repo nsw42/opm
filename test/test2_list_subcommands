@@ -1,0 +1,19 @@
+#! /bin/sh
+# Running help subcommand should result in a list of subcommands
+
+OUT=$TMPDIR/test2.out
+
+$BINDIR/opm help > $OUT
+
+for expected_subcmd in help install list uninstall; do
+  awk -v cmd=$expected_subcmd '($1 == cmd) {found=1} END {if (found) exit 0; else exit 1}' $OUT
+  if [ $? != 0 ]; then
+    echo $0 Subcommand $expected_subcmd not found in output >> $LOGFILE
+    echo "--- begin output ---" >> $LOGFILE
+    cat $OUT >> $LOGFILE
+    echo "--- end output ---" >> $LOGFILE
+    exit 1
+  fi
+done
+
+exit 0
