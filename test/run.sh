@@ -29,7 +29,7 @@ for arg in "$@"; do
   arg=$(echo "$arg" | sed 's/^.*\///')  # strip out any directory
   if echo "$arg" | grep -Eq '^os_'; then
     OSS+=("$arg")
-  elif echo "$arg" | grep -Eq '^test'; then
+  elif echo "$arg" | grep -Eq '^test_'; then
     TESTS+=("$arg")
   else
     echo Unrecognised command-line argument $arg
@@ -41,7 +41,7 @@ if [ "${#OSS[@]}" -eq 0 ]; then
 fi
 
 if [ "${#TESTS[@]}" -eq 0 ]; then
-  TESTS=($(ls "$TESTDIR" | grep ^test))
+  TESTS=($(ls "$TESTDIR" | grep ^test_))
 fi
 
 # sep=70*"="

@@ -8,7 +8,7 @@ The files in this directory are:
 * `os_*.sh`: The OS-specific test launchers. Many of these rely on docker.
 * `run_tests_in_docker.sh`: A support script, used by many of the `os_*.sh`.
 * `run_tests.sh`: Run the tests on the current platform (launched, within a Docker image, by `run_tests_in_docker.sh`)
-* `test*`: Test scripts, normally launched via `run.sh` rather than run individually
+* `test_*`: Test scripts, normally launched via `run.sh` rather than run individually
 * `lib*`: Support scripts for the test scripts
 
 Additionally, files are created in `./tmp` (because not every Docker image provides `/tmp`), and log files are written to `./log/OS.log`
