@@ -5,13 +5,12 @@ TESTNAME=$1
 ARG=$2  # may be empty
 EXPECTED_EXIT_CODE=$3
 
-ERR=$TMPDIR/test1.err
+ERR=$TMPDIR/$(basename $TESTNAME).err
+
+. $TESTDIR/lib_test_functions.sh
 
 $BINDIR/opm $ARG 2> $ERR
-if [ $? -ne $EXPECTED_EXIT_CODE ]; then
-  echo $0 $ARG expected exit code $EXPECTED_EXIT_CODE, got $? >> $LOGFILE
-  exit 1
-fi
+check_exit_code $? $EXPECTED_EXIT_CODE
 
 PATTERN="Usage.*subcommand"
 if grep -q $PATTERN $ERR; then :; else

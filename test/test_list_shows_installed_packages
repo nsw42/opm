@@ -1,21 +1,18 @@
 #! /bin/sh
 # Running list subcommand should result in a list of installed packages
 
-ERR=$TMPDIR/test3.err
-OUT=$TMPDIR/test3.out
+. $TESTDIR/lib_test_functions.sh
+
+ERR=$TMPDIR/$(basename $0).err
+OUT=$TMPDIR/$(basename $0).out
 
 $BINDIR/opm list > $OUT 2> $ERR
 
 if [ $(uname) = Darwin ]; then
   # This is awkward: there are no guarantees about what will be installed.
   # For now, be happy with *something* on stdout and nothing written to stderr
-  if [ -z "$(cat $OUT)" -o -n "$(cat $ERR)" ]; then
-    echo "No output on stdout or unexpected output on stderr" >> $LOGFILE
-    echo "--- begin stderr ---" >> $LOGFILE
-    cat $ERR >> $LOGFILE
-    echo "--- end stderr ---" >> $LOGFILE
-    exit 1
-  fi
+  check_file_is_not_empty "$OUT" stdout
+  check_file_is_empty "$ERR" stderr
 
   echo "stdout was non-empty:" >> $LOGFILE
   echo "--- begin stdout head ---" >> $LOGFILE

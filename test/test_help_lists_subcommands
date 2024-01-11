@@ -1,7 +1,7 @@
 #! /bin/sh
 # Running help subcommand should result in a list of subcommands
 
-OUT=$TMPDIR/test2.out
+OUT=$TMPDIR/$(basename $0).out
 
 $BINDIR/opm help > $OUT
 
