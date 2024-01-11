@@ -17,9 +17,7 @@ check_file_is_empty() {
   TEXT_SOURCE=$2  # a human-readable description of where the file content came from (e.g. "stdout" or "stderr")
   if [ -n "$(cat $FILENAME)" ]; then
     echo "Got unexpected output on $TEXT_SOURCE" >> $LOGFILE
-    echo "--- begin $TEXT_SOURCE ---" >> $LOGFILE
-    cat "$FILENAME" >> $LOGFILE
-    echo "--- end $TEXT_SOURCE ---" >> $LOGFILE
+    copy_file_to_log "$FILENAME" "$TEXT_SOURCE"
     exit 1
   fi
 }
@@ -32,4 +30,13 @@ check_file_is_not_empty() {
     echo "Expected output on $TEXT_SOURCE but got nothing" >> $LOGFILE
     exit 1
   fi
+}
+
+
+copy_file_to_log() {
+  FILENAME=$1  # the file to copy
+  TEXT_SOURCE=$2  # a human-readable description of where the file content came from (e.g. "stdout" or "stderr")
+  echo "--- begin $TEXT_SOURCE ---" >> $LOGFILE
+  cat "$FILENAME" >> $LOGFILE
+  echo "--- end $TEXT_SOURCE ---" >> $LOGFILE
 }

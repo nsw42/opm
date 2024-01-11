@@ -18,10 +18,9 @@ if [ $(uname) = Darwin ]; then
   echo "--- begin stdout head ---" >> $LOGFILE
   head -n 5 $OUT >> $LOGFILE
   echo "--- end stdout head ---" >> $LOGFILE
+
   echo "stderr was empty:" >> $LOGFILE
-  echo "--- begin stderr ---" >> $LOGFILE
-  cat $ERR >> $LOGFILE
-  echo "--- end stderr ---" >> $LOGFILE
+  copy_file_to_log $ERR stderr
   exit 0
 else
   if [ -f /etc/alpine-release ]; then

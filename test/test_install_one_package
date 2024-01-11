@@ -1,0 +1,69 @@
+#! /bin/sh
+# Running `opm install package` installs that package
+
+. $TESTDIR/lib_test_functions.sh
+
+ERR=$TMPDIR/$(basename $0).err
+OUT=$TMPDIR/$(basename $0).out
+
+if [ $(uname) = Darwin ]; then
+  # There are no guarantees about what's already installed
+  # Potentially try multiple packages; for now, I've identified one that I don't have
+  # installed, and which installs quite quickly
+  for package in ace; do
+    # NB. Don't grep -q: it causes grep to finish early, sending SIGPIPE to brew list, which clutters up stderr
+    if brew list | grep "^${package}\$" > /dev/null; then
+      # Package is already installed
+      continue
+    fi
+
+    $BINDIR/opm install $package > $OUT 2> $ERR
+
+    copy_file_to_log $OUT stdout
+    copy_file_to_log $ERR stderr
+
+    check_exit_code $? 0
+
+    if brew list | grep "^${package}\$" > /dev/null; then
+      # Installation looks to have been successful
+
+      brew uninstall $package > /dev/null 2>&1
+    else
+      echo "opm install $package failed" >> $LOGFILE
+      exit 1
+    fi
+
+    exit 0
+  done
+
+  echo "Could not find a package to install - everything attempted was already installed" >> $LOGFILE
+  exit 1
+else
+  # None of alpine, debian, ubuntu have gawk out of the box
+  # But, debian/ubuntu don't even know about it out of the box
+  if [ -f /etc/debian_version ]; then
+    apt-get update > /dev/null 2>&1
+  fi
+
+  package=gawk
+  if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then
+    echo $package is already installed before test starts >> $LOGFILE
+    exit 1
+  fi
+
+  $BINDIR/opm install $package > $OUT 2> $ERR
+  check_exit_code $? 0
+
+  copy_file_to_log $OUT stdout
+  copy_file_to_log $ERR stderr
+
+  if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then
+    # Installation looks to have been successful
+    $BINDIR/opm uninstall $package > /dev/null 2>&1  # not part of the test, so ignore whether it works or not
+  else
+    echo "opm install $package failed" >> $LOGFILE
+    exit 1
+  fi
+
+  exit 0
+fi

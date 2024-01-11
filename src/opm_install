@@ -11,4 +11,47 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
   exit 0
 fi
 
-echo TODO
+# try_FOO -
+#   if package manager FOO is found:
+#     invoke the package manager to install the package(s) specified on the command line
+#     set EXIT_CODE
+#     return 0
+#   otherwise, return 1
+
+try_apk() {
+  if [ -x "$(command -v apk)" ]; then
+    apk add --no-interactive "$@"
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+try_aptget() {
+  if [ -x "$(command -v apt-get)" ]; then
+    apt-get install --yes "$@"
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+try_brew() {
+  if [ -x "$(command -v brew)" ]; then
+    brew install "$@"
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+if [ $(uname) = Darwin ]; then
+  try_brew "$@" && exit $EXIT_CODE
+else
+  try_apk "$@" && exit $EXIT_CODE
+  try_aptget "$@" && exit $EXIT_CODE
+  try_brew "$@" && exit $EXIT_CODE
+fi
+
+echo No supported package manager installed >&2
+exit 1

@@ -1,6 +1,8 @@
 #! /bin/sh
 # Running help subcommand should result in a list of subcommands
 
+. $TESTDIR/lib_test_functions.sh
+
 OUT=$TMPDIR/$(basename $0).out
 
 $BINDIR/opm help > $OUT
@@ -10,9 +12,7 @@ for expected_subcmd in help install list uninstall; do
 
   if [ $? != 0 ]; then
     echo Subcommand $expected_subcmd not found in output >> $LOGFILE
-    echo "--- begin output ---" >> $LOGFILE
-    cat $OUT >> $LOGFILE
-    echo "--- end output ---" >> $LOGFILE
+    copy_file_to_log $OUT output
     exit 1
   fi
 done
