@@ -1,0 +1,32 @@
+#! /bin/sh
+# opm list without finding a valid package manager writes to stderr and exits non-zero
+
+ERR=$TMPDIR/test4.err
+OUT=$TMPDIR/test4.out
+
+# Debian has apt in /usr/bin, so hide it for the duration of
+# running `opm list`
+[ $(uname) = Linux -a -f /usr/bin/apt ] && mv /usr/bin/apt /usr/bin/apt.bak
+PATH=/bin:/usr/bin $BINDIR/opm list > $OUT 2> $ERR
+CODE=$?
+[ -f /usr/bin/apt.bak ] && mv /usr/bin/apt.bak /usr/bin/apt
+
+if [ -n "$(cat $OUT)" ]; then
+  echo "Got unexpected output on stdout" >> $LOGFILE
+  echo "--- begin stdout ---" >> $LOGFILE
+  cat $OUT >> $LOGFILE
+  echo "--- end stdout ---" >> $LOGFILE
+  exit 1
+fi
+
+if [ -z "$(cat $ERR)" ]; then
+  echo "No output written to stderr" >> $LOGFILE
+  exit 1
+fi
+
+if [ $CODE -eq 0 ]; then
+  echo "Expected non-zero exit code, but code 0" >> $LOGFILE
+  exit 1
+fi
+
+exit 0

@@ -11,13 +11,47 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
   exit 0
 fi
 
-# check for brew before apt, because macOS has a Java tool apt
-if [ -x "$(command -v apk)" ]; then
-  apk list --installed
-elif [ -x "$(command -v brew)" ]; then
-  brew list
-elif [ -x "$(command -v apt)" ]; then
-  apt list --installed
+# try_FOO -
+#   if package manager FOO is found: 
+#     invoke the package manager to list installed packages
+#     set EXIT_CODE
+#     return 0
+#   otherwise, return 1
+
+try_apk() {
+  if [ -x "$(command -v apk)" ]; then
+    apk list --installed
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+try_apt() {
+  if [ -x "$(command -v apt)" ]; then
+    apt list --installed
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+try_brew() {
+  if [ -x "$(command -v brew)" ]; then
+    brew list
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+if [ $(uname) = Darwin ]; then
+  try_brew && exit $EXIT_CODE
 else
-  echo No supported package manager installed
+  try_apk && exit $EXIT_CODE
+  try_apt && exit $EXIT_CODE
+  try_brew && exit $EXIT_CODE
 fi
+
+echo No supported package manager installed >&2
+exit 1
