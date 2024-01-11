@@ -5,7 +5,7 @@ IMAGE=$1
 docker pull "$IMAGE" >> $LOGFILE 2>&1
 
 cd $TESTDIR/.. 
-docker run \
+docker run --rm \
   -v ./src:/opm \
   -v ./test:/test \
   -w /test \
