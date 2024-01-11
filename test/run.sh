@@ -23,17 +23,37 @@ export TMPDIR=$TESTDIR/tmp
 mkdir -p $LOGDIR
 mkdir -p $TMPDIR
 
+declare -a OSS TESTS
+
+for arg in "$@"; do
+  arg=$(echo "$arg" | sed 's/^.*\///')  # strip out any directory
+  if echo "$arg" | grep -Eq '^os_'; then
+    OSS+=("$arg")
+  elif echo "$arg" | grep -Eq '^test'; then
+    TESTS+=("$arg")
+  else
+    echo Unrecognised command-line argument $arg
+  fi
+done
+
+if [ "${#OSS[@]}" -eq 0 ]; then
+  OSS=($(ls "$TESTDIR" | grep ^os_))
+fi
+
+if [ "${#TESTS[@]}" -eq 0 ]; then
+  TESTS=($(ls "$TESTDIR" | grep ^test))
+fi
+
 # sep=70*"="
 sep="=========="
 sep="${sep}${sep}${sep}${sep}${sep}${sep}${sep}"
 
-for f in $TESTDIR/os_*.sh; do
-  echo $f
-  LOGLEAF=$(basename $f)
-  LOGLEAF=$(echo $LOGLEAF | sed 's/.sh$/.log/')
+for os in "${OSS[@]}"; do
+  echo $os
+  LOGLEAF=$(echo $os | sed 's/.sh$/.log/')
   export LOGFILE=$LOGDIR/$LOGLEAF
   echo > $LOGFILE
-  "$f"
+  "$TESTDIR/$os" "${TESTS[@]}"
   echo "$sep"
   echo
 done

@@ -1,6 +1,7 @@
 #! /bin/sh
 
 IMAGE=$1
+shift
 
 docker pull "$IMAGE" >> $LOGFILE 2>&1
 
@@ -16,4 +17,5 @@ docker run --rm \
   -e LOGFILE=/test/log/$(basename $LOGFILE) \
   -e LOGCOLOUR=${LOGCOLOUR:-$DEFAULT_LOGCOLOUR} \
   --entrypoint /test/run_tests.sh \
-  "$IMAGE"
+  "$IMAGE" \
+  "$@"

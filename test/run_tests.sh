@@ -12,9 +12,9 @@ LOGDATEFMT="+%Y-%m-%d %H:%M:%S"
 
 echo $(date "$LOGDATEFMT") Tests started >> $LOGFILE
 
-for t in $TESTDIR/test*; do
+for t in "$@"; do
   echo "$(date "$LOGDATEFMT") Running $t"  >> $LOGFILE
-  $t && result=$PASS || result=$FAIL
+  $TESTDIR/$t && result=$PASS || result=$FAIL
   printf "  %-60s  %s\n"  $t  $result
   echo >> $LOGFILE
   echo >> $LOGFILE

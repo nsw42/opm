@@ -4,4 +4,4 @@
 
 # TODO: Multiple OS versions?
 
-$TESTDIR/run_tests_in_docker.sh ubuntu:latest
+$TESTDIR/run_tests_in_docker.sh ubuntu:latest "$@"
