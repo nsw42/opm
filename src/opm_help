@@ -13,7 +13,7 @@ if [ "$1" ]; then
   if [ -x "$subfile" ]; then
     exec "$subfile" --help
   else
-    echo "$1 is not a recognised opm subcommand. See  opm help  for supported commands"
+    echo "$1 is not a recognised opm subcommand. See  opm help  for supported commands" >&2
     exit 1
   fi
 fi
