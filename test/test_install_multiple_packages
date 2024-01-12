@@ -1,0 +1,75 @@
+#! /bin/sh
+# Running `opm install package1 package2 package3` installs those packages
+
+. $TESTDIR/lib_test_functions
+
+ERR=$TMPDIR/$(basename $0).err
+OUT=$TMPDIR/$(basename $0).out
+
+if [ $(uname) = Darwin ]; then
+  # As with test_install_one_package, we try to find a collection of packages
+  # that are not already installed
+  packages="libpq libmd libxc"
+  for package in $packages; do
+    if brew list | grep "^${package}\$" > /dev/null; then
+      echo $package is already installed before test starts >> $LOGFILE
+      exit 1
+    fi
+  done
+
+  $BINDIR/opm install $packages > $OUT 2> $ERR
+  EXIT_CODE=$?
+
+  copy_file_to_log $OUT stdout
+  copy_file_to_log $ERR stderr
+
+  check_exit_code $EXIT_CODE 0
+
+  for package in $packages; do
+    if brew list | grep "^${package}\$" > /dev/null; then
+      # Installation looks to have been successful
+
+      brew uninstall $package > /dev/null 2>&1
+    else
+      echo "opm install $package failed" >> $LOGFILE
+      exit 1
+    fi
+  done
+
+  exit 0
+else
+  # Ensure that packages are available, if needed
+  if [ -f /etc/debian_version ]; then
+    apt-get update > /dev/null 2>&1
+    packages="bzip2 libadns1 libao4"
+  else
+    packages="bzip2 libpng libzip"
+  fi
+
+  for package in $packages; do
+    if $BINDIR/list 2> /dev/null | grep "^${package}\>" > /dev/null; then
+      echo $package is already installed before test starts >> $LOGFILE
+      exit 1
+    fi
+  done
+
+  $BINDIR/opm install $packages > $OUT 2> $ERR
+  EXIT_CODE=$?
+
+  copy_file_to_log $OUT stdout
+  copy_file_to_log $ERR stderr
+
+  check_exit_code $EXIT_CODE 0
+
+  for package in $packages; do
+    if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then
+      # Installation looks to have been successful
+      $BINDIR/opm uninstall $package > /dev/null 2>&1  # not part of the test, so ignore whether it works or not
+    else
+      echo "opm install $package failed" >> $LOGFILE
+      exit 1
+    fi
+  done
+
+  exit 0
+fi
