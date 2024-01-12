@@ -6,8 +6,8 @@ if [ "$1" = "--list-commands" ]; then
   exit 0
 fi
 
-if [ "$1" = "-h" -o "$1" = "--help" ]; then
-  echo Install help
+if [ -z "$1" -o "$1" = "-h" -o "$1" = "--help" ]; then
+  echo Usage: opm install package...
   exit 0
 fi
 

@@ -56,3 +56,14 @@ copy_file_to_log() {
   cat "$FILENAME" >> $LOGFILE
   echo "--- end $TEXT_SOURCE ---" >> $LOGFILE
 }
+
+
+run_happy_case_command_variant() {
+  # assumes that ERR and OUT vars are defined
+  suffix=$1
+  shift
+  echo Running "$@" >> $LOGFILE
+  "$@" > ${OUT}.$suffix 2> ${ERR}.$suffix
+  check_exit_code $? 0
+  check_file_is_empty ${ERR}.$suffix
+}
