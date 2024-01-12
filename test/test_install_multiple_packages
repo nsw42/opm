@@ -7,10 +7,8 @@ ERR=$TMPDIR/$(basename $0).err
 OUT=$TMPDIR/$(basename $0).out
 
 if [ $(uname) = Darwin ]; then
-  # As with test_install_one_package, we try to find a collection of packages
-  # that are not already installed
-  packages="libpq libmd libxc"
-  for package in $packages; do
+  . $TESTDIR/lib_macos
+  for package in $MACOS_INSTALLABLE_PACKAGES; do
     if brew list | grep "^${package}\$" > /dev/null; then
       echo $package is already installed before test starts >> $LOGFILE
       exit 1
@@ -38,13 +36,8 @@ if [ $(uname) = Darwin ]; then
 
   exit 0
 else
-  # Ensure that packages are available, if needed
-  if [ -f /etc/debian_version ]; then
-    apt-get update > /dev/null 2>&1
-    packages="bzip2 libadns1 libao4"
-  else
-    packages="bzip2 libpng libzip"
-  fi
+  . $TESTDIR/lib_linux
+  run_apt_get_update_on_debian
 
   for package in $packages; do
     if $BINDIR/list 2> /dev/null | grep "^${package}\>" > /dev/null; then

@@ -1,0 +1,96 @@
+#! /bin/sh
+# Running `opm uninstall package` uninstalls that package
+
+. $TESTDIR/lib_test_functions
+
+ERR=$TMPDIR/$(basename $0).err
+OUT=$TMPDIR/$(basename $0).out
+
+if [ $(uname) = Darwin ]; then
+  . $TESTDIR/lib_macos
+
+  # Test setup - identify a package we can try to uninstall, and install it if necessary
+  to_install=
+  to_uninstall=
+  for package in $MACOS_INSTALLABLE_PACKAGES; do
+    if brew list "$package" > /dev/null 2>&1; then
+      # it's already installed
+      to_uninstall=$package
+      break
+    else
+      # if we don't find something suitable already installed, we can install this one
+      to_install=$package
+    fi
+  done
+
+  if [ -z "$to_uninstall" ]; then
+    if [ -z "$to_install" ]; then
+      echo No installable or uninstallable package found. Aborting. >> $LOGFILE
+      exit 1
+    fi
+    echo Installing $to_install >> $LOGFILE
+    $BINDIR/opm install $to_install >> $LOGFILE 2>&1
+    check_exit_code $? 0
+    to_uninstall=$to_install
+  fi
+
+  if [ -z "$to_uninstall" ]; then
+    echo No package to uninstall found. Aborting. >> $LOGFILE
+    exit 1
+  fi
+
+  # try to uninstall it
+
+  echo Uninstalling $to_uninstall >> $LOGFILE
+
+  $BINDIR/opm uninstall $to_uninstall > $OUT 2> $ERR
+  EXIT_CODE=$?
+
+  copy_file_to_log $OUT stdout
+  copy_file_to_log $ERR stderr
+
+  check_exit_code $EXIT_CODE 0
+
+  # check that uninstallation actually happened
+  if brew list "$to_uninstall" > /dev/null 2>&1; then
+    echo "Package still installed after opm uninstall $to_uninstall" >> $LOGFILE
+    exit 1
+  fi
+
+  exit 0
+else
+  . $TESTDIR/lib_linux
+
+  # Test setup - identify a package we can try to uninstall, and install it if necessary
+
+  run_apt_get_update_on_debian
+
+  package=$(echo $LINUX_INSTALLABLE_PACKAGES | sed 's/ .*//')  # just take the first one
+
+  echo Installing $package >> $LOGFILE
+  $BINDIR/opm install $package > /dev/null 2>&1
+  if ! $BINDIR/opm list 2> /dev/null | grep -q "^${package}\>"; then
+    echo Test setup installation of $package failed >> $LOGFILE
+    exit 1
+  fi
+
+  # try to uninstall it
+
+  echo Uninstalling $package >> $LOGFILE
+
+  $BINDIR/opm uninstall $package > $OUT 2> $ERR
+  EXIT_CODE=$?
+
+  copy_file_to_log $OUT stdout
+  copy_file_to_log $ERR stderr
+
+  check_exit_code $EXIT_CODE 0
+
+  # check that uninstallation actually happened
+  if $BINDIR/opm list 2> /dev/null | grep -q "^${package}\>"; then
+    echo "Package still installed after opm uninstall $package" >> $LOGFILE
+    exit 1
+  fi
+
+  exit 0
+fi

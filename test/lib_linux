@@ -1,0 +1,16 @@
+# lib_linux
+# Useful definitions for tests running on Linux platforms
+
+# None of alpine, debian, ubuntu have gawk out of the box
+# But, debian/ubuntu don't even know about it out of the box
+if [ -f /etc/debian_version ]; then
+  LINUX_INSTALLABLE_PACKAGES="gawk bzip2 libadns1 libao4"
+else
+  LINUX_INSTALLABLE_PACKAGES="gawk bzip2 libpng libzip"
+fi
+
+run_apt_get_update_on_debian() {
+  if [ -f /etc/debian_version ]; then
+    apt-get update > /dev/null 2>&1
+  fi
+}
