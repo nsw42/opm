@@ -18,11 +18,12 @@ if [ $(uname) = Darwin ]; then
     fi
 
     $BINDIR/opm install $package > $OUT 2> $ERR
+    EXIT_CODE=$?
 
     copy_file_to_log $OUT stdout
     copy_file_to_log $ERR stderr
 
-    check_exit_code $? 0
+    check_exit_code $EXIT_CODE 0
 
     if brew list | grep "^${package}\$" > /dev/null; then
       # Installation looks to have been successful
@@ -52,10 +53,12 @@ else
   fi
 
   $BINDIR/opm install $package > $OUT 2> $ERR
-  check_exit_code $? 0
+  EXIT_CODE=$?
 
   copy_file_to_log $OUT stdout
   copy_file_to_log $ERR stderr
+
+  check_exit_code $EXIT_CODE 0
 
   if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then
     # Installation looks to have been successful
