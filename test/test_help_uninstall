@@ -1,0 +1,22 @@
+#! /bin/sh
+# Runnning `opm help uninstall`, `opm uninstall` (without arguments), `opm uninstall -h` and `opm uninstall --help` all provide a Usage message
+
+. $TESTDIR/lib_test_functions
+
+ERR=$TMPDIR/$(basename $0).err
+OUT=$TMPDIR/$(basename $0).out
+
+run_happy_case_command_variant 1 $BINDIR/opm help uninstall
+run_happy_case_command_variant 2 $BINDIR/opm uninstall
+run_happy_case_command_variant 3 $BINDIR/opm uninstall -h
+run_happy_case_command_variant 4 $BINDIR/opm uninstall --help
+
+if ! grep -q ^Usage ${OUT}.1; then
+  echo Usage message not found in output >> $LOGFILE
+  exit 1
+fi
+
+check_files_are_equal ${OUT}.1 ${OUT}.2
+check_files_are_equal ${OUT}.1 ${OUT}.3
+check_files_are_equal ${OUT}.1 ${OUT}.4
+
