@@ -6,7 +6,7 @@ if [ "$1" = "--list-commands" ]; then
   exit 0
 fi
 
-if [ "$1" ]; then
+if [ -n "$1" -a '(' "$1" != "-h" ')' -a '(' "$1" != "--help" ')' -a '(' "$1" != "help" ')' ]; then
   # Invoked as opm help subcommand
   # Does subcommand exist?
   subfile=$(dirname $0)/opm_$1
@@ -26,3 +26,4 @@ done
 
 echo
 echo "Run  opm subcommand --help  for more information about that specific command"
+exit 0

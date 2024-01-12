@@ -1,0 +1,25 @@
+#! /bin/sh
+# Running `opm help`, `opm help -h`, `opm help --help` and `opm help help` should all give the same argument
+
+. $TESTDIR/lib_test_functions
+
+ERR=$TMPDIR/$(basename $0).err
+OUT=$TMPDIR/$(basename $0).out
+
+run_and_capture_output() {
+  suffix=$1
+  shift
+  echo Running "$@" >> $LOGFILE
+  "$@" > ${OUT}.$suffix 2> ${ERR}.$suffix
+  check_exit_code $? 0
+  check_file_is_empty ${ERR}.$suffix
+}
+
+run_and_capture_output 1 $BINDIR/opm help
+run_and_capture_output 2 $BINDIR/opm help -h
+run_and_capture_output 3 $BINDIR/opm help --help
+run_and_capture_output 4 $BINDIR/opm help help
+
+check_files_are_equal ${OUT}.1 ${OUT}.2
+check_files_are_equal ${OUT}.1 ${OUT}.3
+check_files_are_equal ${OUT}.1 ${OUT}.4

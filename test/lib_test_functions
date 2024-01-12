@@ -1,5 +1,6 @@
 # lib_test_functions
 # Incorporate into test scripts with  . $TESTDIR/lib_test_functions
+# vim: ft=sh
 
 check_exit_code() {
   ACTUAL=$1
@@ -28,6 +29,21 @@ check_file_is_not_empty() {
   TEXT_SOURCE=$2  # a human-readable description of where the file content came from (e.g. "stdout" or "stderr")
   if [ -z "$(cat $FILENAME)" ]; then
     echo "Expected output on $TEXT_SOURCE but got nothing" >> $LOGFILE
+    exit 1
+  fi
+}
+
+
+check_files_are_equal() {
+  F1=$1
+  F2=$2
+  if cmp -s $F1 $F2; then
+    # equal
+    :
+  else
+    echo "Files $F1 and F2 differ" >> $LOGFILE
+    copy_file_to_log $F1 "file 1"
+    copy_file_to_log $F2 "file 2"
     exit 1
   fi
 }
