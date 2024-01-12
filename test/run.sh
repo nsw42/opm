@@ -50,8 +50,7 @@ sep="${sep}${sep}${sep}${sep}${sep}${sep}${sep}"
 
 for os in "${OSS[@]}"; do
   echo $os
-  LOGLEAF=$(echo $os | sed 's/.sh$/.log/')
-  export LOGFILE=$LOGDIR/$LOGLEAF
+  export LOGFILE=$LOGDIR/${os}.log
   echo > $LOGFILE
   "$TESTDIR/$os" "${TESTS[@]}"
   echo "$sep"

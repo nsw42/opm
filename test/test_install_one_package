@@ -1,7 +1,7 @@
 #! /bin/sh
 # Running `opm install package` installs that package
 
-. $TESTDIR/lib_test_functions.sh
+. $TESTDIR/lib_test_functions
 
 ERR=$TMPDIR/$(basename $0).err
 OUT=$TMPDIR/$(basename $0).out

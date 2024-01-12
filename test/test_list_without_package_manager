@@ -1,7 +1,7 @@
 #! /bin/sh
 # opm list without finding a valid package manager writes to stderr and exits non-zero
 
-. $TESTDIR/lib_test_functions.sh
+. $TESTDIR/lib_test_functions
 
 ERR=$TMPDIR/$(basename $0).err
 OUT=$TMPDIR/$(basename $0).out

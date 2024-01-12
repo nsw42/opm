@@ -16,6 +16,6 @@ docker run --rm \
   -e TMPDIR=/test/tmp \
   -e LOGFILE=/test/log/$(basename $LOGFILE) \
   -e LOGCOLOUR=${LOGCOLOUR:-$DEFAULT_LOGCOLOUR} \
-  --entrypoint /test/run_tests.sh \
+  --entrypoint /test/run_tests \
   "$IMAGE" \
   "$@"

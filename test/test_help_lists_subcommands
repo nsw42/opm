@@ -1,7 +1,7 @@
 #! /bin/sh
 # Running help subcommand should result in a list of subcommands
 
-. $TESTDIR/lib_test_functions.sh
+. $TESTDIR/lib_test_functions
 
 OUT=$TMPDIR/$(basename $0).out
 

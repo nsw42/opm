@@ -1,5 +1,5 @@
-# lib_test_functions.sh
-# Incorporate into test scripts with  . $TESTDIR/lib_test_functions.sh
+# lib_test_functions
+# Incorporate into test scripts with  . $TESTDIR/lib_test_functions
 
 check_exit_code() {
   ACTUAL=$1

@@ -7,7 +7,7 @@ EXPECTED_EXIT_CODE=$3
 
 ERR=$TMPDIR/$(basename $TESTNAME).err
 
-. $TESTDIR/lib_test_functions.sh
+. $TESTDIR/lib_test_functions
 
 $BINDIR/opm $ARG 2> $ERR
 check_exit_code $? $EXPECTED_EXIT_CODE
