@@ -1,0 +1,56 @@
+#! /bin/sh
+# Running `opm install package` twice exits with code zero, and the package still installed
+
+. $TESTDIR/lib_test_functions
+
+ERR=$TMPDIR/$(basename $0).err
+OUT=$TMPDIR/$(basename $0).out
+
+# Platform specific setup: figure out a package to install, and do pre-launch checks
+if [ $(uname) = Darwin ]; then
+  . $TESTDIR/lib_macos
+
+  test_setup() {
+    for package in $MACOS_INSTALLABLE_PACKAGES; do
+      if brew list "$package" > /dev/null 2>&1; then
+        # Package is already installed
+        continue
+      fi
+      return 0
+    done
+
+    echo "Could not find a package to install - everything attempted was already installed" >> $LOGFILE
+    exit 1
+  }
+  test_setup
+else
+  . $TESTDIR/lib_linux
+
+  run_apt_get_update_on_debian
+
+  package=$(echo $LINUX_INSTALLABLE_PACKAGES | sed 's/ .*//')  # just take the first one: the Docker image ensures a clean slate
+  if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then
+    echo $package is already installed before test starts >> $LOGFILE
+    exit 1
+  fi
+fi
+
+for pass in 1 2; do
+  $BINDIR/opm install $package > $OUT.$pass 2> $ERR.$pass
+  EXIT_CODE=$?
+
+  copy_file_to_log $OUT.$pass stdout
+  copy_file_to_log $ERR.$pass stderr
+
+  check_exit_code $EXIT_CODE 0
+done
+
+if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then
+  # Installation looks to have been successful
+  $BINDIR/opm uninstall $package > /dev/null 2>&1  # not part of the test, so ignore whether it works or not
+else
+  echo "opm install $package failed" >> $LOGFILE
+  exit 1
+fi
+
+exit 0
