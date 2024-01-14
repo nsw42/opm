@@ -1,0 +1,13 @@
+add     install
+i       install
+inst    install
+
+h       help
+
+l       list
+
+del     uninstall
+remove  uninstall
+u       uninstall
+un      uninstall
+uninst  uninstall

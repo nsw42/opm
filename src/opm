@@ -13,14 +13,33 @@ fi
 
 # TODO: Global arguments before subcommand
 
+lookup_alias() {
+  # look up $cmd in the aliases file and, if found, update $cmd and $subfile then return 0
+  # return 1 if not found
+  while read alias alias_for; do
+    if [ "$alias" = "$cmd" ]; then
+      cmd=$alias_for
+      subfile="${src_dir}/opm_$cmd"
+      if [ ! -x "$subfile" ]; then
+        echo "Corrupt install: $alias expands to $alias_for, but $subfile is not executable" > /dev/stderr
+        exit 1
+      fi
+      return 0
+    fi
+  done < ${src_dir}/opm.aliases
+  return 1
+}
+
 cmd=$1
 shift
 src_dir=$(dirname $0)
 subfile="${src_dir}/opm_$cmd"
 if [ ! -x "$subfile" ]; then
-  echo "Unrecognised subcommand '$cmd'."
-  echo "See   $0 help   to list available commands"
-  exit 1
+  if ! lookup_alias; then
+    echo "Unrecognised subcommand '$cmd'."
+    echo "See   $0 help   to list available commands"
+    exit 1
+  fi
 fi
 
 exec "$subfile" "$@"

@@ -1,0 +1,47 @@
+#! /bin/sh
+# Check that invoking each of the aliases gives the same output as its main command
+
+. $TESTDIR/lib_test_functions
+
+ERR=$TMPDIR/$(basename $0).err
+OUT=$TMPDIR/$(basename $0).out
+
+# Install aliases
+
+run_happy_case_command_variant 1 $BINDIR/opm install -h
+run_happy_case_command_variant 2 $BINDIR/opm add -h
+run_happy_case_command_variant 3 $BINDIR/opm i -h
+run_happy_case_command_variant 4 $BINDIR/opm inst -h
+
+check_files_are_equal ${OUT}.1 ${OUT}.2
+check_files_are_equal ${OUT}.1 ${OUT}.3
+check_files_are_equal ${OUT}.1 ${OUT}.4
+
+# Help aliases
+
+run_happy_case_command_variant 1 $BINDIR/opm help
+run_happy_case_command_variant 2 $BINDIR/opm h
+
+check_files_are_equal ${OUT}.1 ${OUT}.2
+
+# List aliases
+
+run_happy_case_command_variant 1 $BINDIR/opm list -h
+run_happy_case_command_variant 2 $BINDIR/opm l -h
+
+check_files_are_equal ${OUT}.1 ${OUT}.2
+
+# Uninstall aliases
+
+run_happy_case_command_variant 1 $BINDIR/opm uninstall -h
+run_happy_case_command_variant 2 $BINDIR/opm del -h
+run_happy_case_command_variant 3 $BINDIR/opm remove -h
+run_happy_case_command_variant 4 $BINDIR/opm u -h
+run_happy_case_command_variant 5 $BINDIR/opm un -h
+run_happy_case_command_variant 6 $BINDIR/opm uninst -h
+
+check_files_are_equal ${OUT}.1 ${OUT}.2
+check_files_are_equal ${OUT}.1 ${OUT}.3
+check_files_are_equal ${OUT}.1 ${OUT}.4
+check_files_are_equal ${OUT}.1 ${OUT}.5
+check_files_are_equal ${OUT}.1 ${OUT}.6

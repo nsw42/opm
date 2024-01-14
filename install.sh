@@ -13,6 +13,8 @@ show_usage() {
 # This list needs to be kept up-to-date
 # It's done manually to avoid dependencies on unzip
 command_files="opm opm_help opm_install opm_list opm_uninstall"
+other_files="opm.aliases"
+all_files="$command_files $other_files"
 
 install_curl_if_necessary=false
 overwrite_existing_files=false
@@ -49,7 +51,7 @@ done
 
 if ! $overwrite_existing_files; then
   existing_files=
-  for f in $command_files; do
+  for f in $all_files; do
     f=$(basename $f)
     if [ -f /usr/local/bin/$f ]; then
       existing_files="$existing_files $f"
@@ -181,7 +183,7 @@ download_with_wget() {
   return $?
 }
 
-for file in $command_files; do
+for file in $all_files; do
   URL=https://raw.githubusercontent.com/nsw42/opm/main/src/$file
   if ! $downloader "$URL" "$tmpdir/$file"; then
     echo "Failed to fetch $file (from $URL)"
@@ -194,6 +196,9 @@ cd $tmpdir
 # Firstly, try installing without root:
 do_install_as_current_user() {
   install -m755 $command_files $prefix
+  exit_code=$?
+  if [ $exit_code -ne 0 ]; then return $exit_code; fi
+  install -m644 $other_files $prefix
   return $?
 }
 
@@ -210,6 +215,9 @@ try_install_as_current_user() {
 
 try_install_with_sudo() {
   sudo install -m755 $command_files $prefix
+  exit_code=$?
+  if [ $exit_code -ne 0 ]; then return $exit_code; fi
+  sudo install -m644 $other_files $prefix
   return $?
 }
 

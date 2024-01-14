@@ -6,10 +6,12 @@ if [ "$1" = "--list-commands" ]; then
   exit 0
 fi
 
+src_dir=$(dirname $0)
+
 if [ -n "$1" -a '(' "$1" != "-h" ')' -a '(' "$1" != "--help" ')' -a '(' "$1" != "help" ')' ]; then
   # Invoked as opm help subcommand
   # Does subcommand exist?
-  subfile=$(dirname $0)/opm_$1
+  subfile=${src_dir}/opm_$1
   if [ -x "$subfile" ]; then
     exec "$subfile" --help
   else
@@ -20,8 +22,17 @@ fi
 
 
 echo Available opm subcommands are:
-for f in $(dirname $0)/opm_*; do
+for f in ${src_dir}/opm_*; do
   $f  --list-commands
+  aliases=
+  join=
+  while read alias alias_for; do
+    if [ "opm_$alias_for" = "$(basename $f)" ]; then
+      aliases="${aliases}${join}${alias}"
+      join=", "
+    fi
+  done < ${src_dir}/opm.aliases
+  printf "  %-10s (Aliases: %s)\n" "" "$aliases"
 done
 
 echo

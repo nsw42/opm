@@ -64,6 +64,7 @@ run_happy_case_command_variant() {
   shift
   echo Running "$@" >> $LOGFILE
   "$@" > ${OUT}.$suffix 2> ${ERR}.$suffix
-  check_exit_code $? 0
-  check_file_is_empty ${ERR}.$suffix
+  EXIT_CODE=$?
+  check_file_is_empty ${ERR}.$suffix stderr
+  check_exit_code $EXIT_CODE 0
 }
