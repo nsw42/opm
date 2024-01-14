@@ -29,3 +29,16 @@ for command in opm opm_help opm_install opm_list opm_uninstall; do
     exit 1
   fi
 done
+
+# Check a couple of aliases, too, since the aliases file needs to be installed separately
+if ! opm i --help >$OUT 2> $ERR; then
+  echo "Alias opm i failed" >> $LOGFILE
+  copy_file_to_log $OUT stdout
+  copy_file_to_log $ERR stderr
+fi
+
+if ! opm u --help >$OUT 2> $ERR; then
+  echo "Alias opm u failed" >> $LOGFILE
+  copy_file_to_log $OUT stdout
+  copy_file_to_log $ERR stderr
+fi
