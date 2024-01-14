@@ -34,6 +34,14 @@ chmod +x ./install.sh
 ./install.sh -i
 ```
 
+### Upgrading
+
+The installer checks if there are any files that already exist that would get overwritten by the installer, which means upgrading opm will fail. Therefore, to upgrade an existing version of opm, it is necessary to run:
+
+```
+curl https://raw.githubusercontent.com/nsw42/opm/main/install.sh | sh -s -- -f
+```
+
 ## Usage
 
 ```
