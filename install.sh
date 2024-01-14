@@ -150,7 +150,6 @@ if [ $(uname) = Darwin ]; then
 else
   tmpdir=$(mktemp -d)
 fi
-echo $tmpdir # TODO: Remove me
 
 # Downloaders
 
@@ -224,4 +223,6 @@ if ! try_install_as_current_user; then
   fi
 fi
 
-# TODO: Delete temporary directory
+# Delete temporary directory
+cd
+rm -rf $tmpdir
