@@ -1,0 +1,31 @@
+#! /bin/sh
+# Test the install script, when it needs to install curl
+# Note that this differs from the other test scripts: 
+# It runs the installer, rather than the scripts in $BINDIR
+# As a result, the run_tests_in_docker script has special handling for this script.
+
+. $TESTDIR/lib_test_functions
+
+ERR=$TESTDIR/tmp/$(basename $0).err
+OUT=$TESTDIR/tmp/$(basename $0).out
+
+if [ $(uname) = Darwin ]; then
+  echo curl is provided by the OS: Skipping this test >> $LOGFILE
+  exit 0
+fi
+
+# Simple happy path test: run the installer, asking it to install curl, and check that the binaries are available
+$ROOTDIR/install.sh -i -v > $OUT 2> $ERR
+EXIT_CODE=$?
+
+copy_file_to_log $OUT stdout
+copy_file_to_log $ERR stderr
+
+check_exit_code $EXIT_CODE 0
+
+for command in opm opm_help opm_install opm_list opm_uninstall; do
+  if ! $command --help > /dev/null 2>&1; then
+    echo "$command --help failed" >> $LOGFILE
+    exit 1
+  fi
+done

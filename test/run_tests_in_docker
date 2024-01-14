@@ -6,6 +6,27 @@ shift
 docker pull "$IMAGE" >> $LOGFILE 2>&1
 
 cd $TESTDIR/.. 
+
+INSTALL_TESTS=$(echo "$@" | tr ' ' '\n' | grep ^test_installer)
+if [ -n "$INSTALL_TESTS" ]; then
+  # The test of the install script requires a different environment to the other tests
+  # Also, each test needs a fresh Docker container
+  for install_test in $INSTALL_TESTS; do
+    docker run --rm \
+      -v ./:/opm \
+      -w / \
+      -e ROOTDIR=/opm \
+      -e TESTDIR=/opm/test \
+      -e LOGDIR=/opm/test/log \
+      -e LOGFILE=/opm/test/log/$(basename $LOGFILE) \
+      -e LOGCOLOUR=${LOGCOLOUR:-$DEFAULT_LOGCOLOUR} \
+      --entrypoint /opm/test/run_tests \
+      "$IMAGE" \
+      $install_test
+  done
+fi
+
+OTHER_TESTS=$(echo "$@" | tr ' ' '\n' | grep -v ^test_installer)
 docker run --rm \
   -v ./src:/opm \
   -v ./test:/test \
@@ -18,4 +39,4 @@ docker run --rm \
   -e LOGCOLOUR=${LOGCOLOUR:-$DEFAULT_LOGCOLOUR} \
   --entrypoint /test/run_tests \
   "$IMAGE" \
-  "$@"
+  $OTHER_TESTS

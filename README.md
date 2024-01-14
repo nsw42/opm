@@ -16,9 +16,23 @@ It does _not_ install package managers, or configure package managers, or attemp
 
 ## Installation
 
-`opm` is written in pure sh, so there are no dependencies other than a basic shell.
+`opm` is written in pure sh, so has no dependencies other than a POSIX shell. The installer requires `curl` or `wget`, but can install `curl` if you do not already have it.
 
-TODO...
+### If you have curl
+
+```
+curl https://raw.githubusercontent.com/nsw42/opm/main/install.sh | sh -
+```
+
+### If you do not have curl
+
+Use a web browser to save the content from <https://raw.githubusercontent.com/nsw42/opm/main/install.sh>, then run the following commands:
+
+```
+cd _the_directory_where_you_saved_the_install_script_
+chmod +x ./install.sh
+./install.sh -i
+```
 
 ## Usage
 

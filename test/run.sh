@@ -15,7 +15,8 @@ case $1 in
     ;;
 esac
 
-export BINDIR=$(dirname $0)/../src
+export ROOTDIR=$(dirname $0)/..
+export BINDIR=$ROOTDIR/src
 export TESTDIR=$(dirname $0)
 export LOGDIR=$TESTDIR/log
 export TMPDIR=$TESTDIR/tmp

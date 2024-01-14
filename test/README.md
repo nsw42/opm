@@ -17,6 +17,7 @@ Additionally, files are created in `./tmp` (because not every Docker image provi
 
 The following environment variables are used throughout the test suite.
 
+* `$ROOTDIR` - the parent directory (e.g. `$ROOTDIR/install.sh` should exist)
 * `$BINDIR` - the directory where the opm scripts can be found (e.g. `$BINDIR/opm` should exist)
 * `$TESTDIR` - the directory where the test scripts can be found (e.g. `$TESTDIR/run.sh` should exist)
 * `$LOGDIR` - the directory where log files should be written
