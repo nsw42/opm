@@ -13,7 +13,7 @@ if [ $(uname) = Darwin ]; then
   if [ ! -x $(command -v curl) ]; then
     echo "curl not available, even though it's part of the standard macOS install"
     echo "Aborting"
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 
   # Remove any existing binaries
@@ -29,7 +29,7 @@ else
   if [ ! -x $(command -v curl) ]; then
     echo "Test setup failed: unable to install curl"
     echo "Aborting"
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 fi
 
@@ -45,7 +45,7 @@ check_exit_code $EXIT_CODE 0
 for command in opm opm_help opm_install opm_list opm_uninstall; do
   if ! $command --help > /dev/null 2>&1; then
     echo "$command --help failed" >> $LOGFILE
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 done
 

@@ -25,7 +25,7 @@ if [ $(uname) = Darwin ]; then
   if [ -z "$to_uninstall" ]; then
     if [ -z "$to_install" ]; then
       echo No installable or uninstallable package found. Aborting. >> $LOGFILE
-      exit 1
+      exit $EXIT_TEST_FAILED
     fi
     echo Installing $to_install >> $LOGFILE
     $BINDIR/opm install $to_install >> $LOGFILE 2>&1
@@ -35,7 +35,7 @@ if [ $(uname) = Darwin ]; then
 
   if [ -z "$to_uninstall" ]; then
     echo No package to uninstall found. Aborting. >> $LOGFILE
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 
   # try to uninstall it
@@ -53,10 +53,10 @@ if [ $(uname) = Darwin ]; then
   # check that uninstallation actually happened
   if brew list "$to_uninstall" > /dev/null 2>&1; then
     echo "Package still installed after opm uninstall $to_uninstall" >> $LOGFILE
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 
-  exit 0
+  exit $EXIT_TEST_PASSED
 else
   # Test setup - identify a package we can try to uninstall, and install it if necessary
 
@@ -68,7 +68,7 @@ else
   $BINDIR/opm install $package > /dev/null 2>&1
   if ! $BINDIR/opm list 2> /dev/null | grep -q "^${package}\>"; then
     echo Test setup installation of $package failed >> $LOGFILE
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 
   # try to uninstall it
@@ -86,8 +86,8 @@ else
   # check that uninstallation actually happened
   if $BINDIR/opm list 2> /dev/null | grep -q "^${package}\>"; then
     echo "Package still installed after opm uninstall $package" >> $LOGFILE
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 
-  exit 0
+  exit $EXIT_TEST_PASSED
 fi

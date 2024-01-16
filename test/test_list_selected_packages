@@ -21,7 +21,7 @@ check_exit_code $EXIT_CODE 0
 for package in $PACKAGE_1 $PACKAGE_2; do
   if ! grep -q "^$package" $OUT; then
     echo Failed to find $package in output >> $LOGFILE
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 done
 
@@ -30,8 +30,8 @@ ONE_UNINSTALLED_PACKAGE=$(echo "$INSTALLABLE_PACKAGES" | cut -d ' ' -f 1)
 for package in $ANOTHER_INSTALLED_PACKAGE $ONE_UNINSTALLED_PACKAGE; do
   if grep -q "^$package" $OUT; then
     echo Found unexpected package $package in output >> $LOGFILE
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 done
 
-exit 0
+exit $EXIT_TEST_PASSED

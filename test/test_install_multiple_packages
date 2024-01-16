@@ -11,7 +11,7 @@ if [ $(uname) = Darwin ]; then
   for package in $INSTALLABLE_PACKAGES; do
     if brew list | grep "^${package}\$" > /dev/null; then
       echo $package is already installed before test starts >> $LOGFILE
-      exit 1
+      exit $EXIT_TEST_FAILED
     fi
   done
 
@@ -30,18 +30,18 @@ if [ $(uname) = Darwin ]; then
       brew uninstall $package > /dev/null 2>&1
     else
       echo "opm install $package failed" >> $LOGFILE
-      exit 1
+      exit $EXIT_TEST_FAILED
     fi
   done
 
-  exit 0
+  exit $EXIT_TEST_PASSED
 else
   run_apt_get_update_on_debian
 
   for package in $packages; do
     if $BINDIR/list 2> /dev/null | grep "^${package}\>" > /dev/null; then
       echo $package is already installed before test starts >> $LOGFILE
-      exit 1
+      exit $EXIT_TEST_FAILED
     fi
   done
 
@@ -59,9 +59,9 @@ else
       $BINDIR/opm uninstall $package > /dev/null 2>&1  # not part of the test, so ignore whether it works or not
     else
       echo "opm install $package failed" >> $LOGFILE
-      exit 1
+      exit $EXIT_TEST_FAILED
     fi
   done
 
-  exit 0
+  exit $EXIT_TEST_PASSED
 fi

@@ -1,11 +1,15 @@
 #! /bin/sh
 
+. $TESTDIR/lib_test_functions
+
 if $LOGCOLOUR; then
   PASS="$(printf "\033[1;32m")Pass$(printf "\033[0m")"
   FAIL="$(printf "\033[1;31m")FAIL$(printf "\033[0m")"
+  SKIP="$(printf "\033[1;32m")Skipped$(printf "\033[0m")"
 else
   PASS=Pass
   FAIL=FAIL
+  SKIP=Skipped
 fi
 
 LOGDATEFMT="+%Y-%m-%d %H:%M:%S"
@@ -14,7 +18,15 @@ echo $(date "$LOGDATEFMT") Tests started >> $LOGFILE
 
 for t in "$@"; do
   echo "$(date "$LOGDATEFMT") Running $t"  >> $LOGFILE
-  $TESTDIR/$t && result=$PASS || result=$FAIL
+  $TESTDIR/$t
+  exit_code=$?
+  if [ $exit_code = $EXIT_TEST_PASSED ]; then
+    result=$PASS
+  elif [ $exit_code = $EXIT_TEST_SKIPPED ]; then
+    result=$SKIP
+  else
+    result=$FAIL
+  fi
   printf "  %-60s  %s\n"  $t  $result
   echo >> $LOGFILE
   echo >> $LOGFILE

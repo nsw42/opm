@@ -13,8 +13,8 @@ for expected_subcmd in help install list uninstall; do
   if [ $? != 0 ]; then
     echo Subcommand $expected_subcmd not found in output >> $LOGFILE
     copy_file_to_log $OUT output
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 done
 
-exit 0
+exit $EXIT_TEST_PASSED

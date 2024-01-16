@@ -21,7 +21,7 @@ if [ $(uname) = Darwin ]; then
 
   echo "stderr was empty:" >> $LOGFILE
   copy_file_to_log $ERR stderr
-  exit 0
+  exit $EXIT_TEST_PASSED
 else
   if [ -f /etc/alpine-release ]; then
     expected_package=busybox
@@ -30,7 +30,7 @@ else
     expected_package=debianutils
   else
     echo "Unrecognised OS encountered" >> $LOGFILE
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 
   if grep -q "^${expected_package}.*installed" $OUT; then
@@ -42,6 +42,6 @@ else
     echo "--- begin stdout ---" >> $LOGFILE
     cat $OUT >> $LOGFILE
     echo "--- end stdout ---" >> $LOGFILE
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 fi

@@ -16,10 +16,10 @@ PATTERN="Usage.*subcommand"
 if grep -q $PATTERN $ERR; then :; else
   echo $0 $ARG No usage text found >> $LOGFILE
   cat $ERR >> $LOGFILE
-  exit 1
+  exit $EXIT_TEST_FAIL
 fi
 
 echo "$0 $ARG found expected usage text:" >> $LOGFILE
 grep $PATTERN $ERR >> $LOGFILE
 
-exit 0
+exit $EXIT_TEST_PASSED

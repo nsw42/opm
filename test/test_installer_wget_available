@@ -12,7 +12,7 @@ OUT=$TESTDIR/tmp/$(basename $0).out
 if [ $(uname) = Darwin ]; then
   echo "curl is provided by the OS, and is preferentially used to wget" >> $LOGFILE
   echo "Skipping test" >> $LOGFILE
-  exit 0
+  exit $EXIT_TEST_SKIPPED
 else
   # Sigh. Install wget
   . $TESTDIR/lib_packages
@@ -21,7 +21,7 @@ else
   if [ ! -x $(command -v wget) ]; then
     echo "Test setup failed: unable to install wget"
     echo "Aborting"
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 fi
 
@@ -37,7 +37,7 @@ check_exit_code $EXIT_CODE 0
 for command in opm opm_help opm_install opm_list opm_uninstall; do
   if ! $command --help > /dev/null 2>&1; then
     echo "$command --help failed" >> $LOGFILE
-    exit 1
+    exit $EXIT_TEST_FAILED
   fi
 done
 
