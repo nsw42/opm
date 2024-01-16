@@ -12,7 +12,7 @@ show_usage() {
 
 # This list needs to be kept up-to-date
 # It's done manually to avoid dependencies on unzip
-command_files="opm opm_help opm_install opm_list opm_uninstall"
+command_files="opm opm_help opm_install opm_list opm_uninstall opm_update"
 other_files="opm.aliases"
 all_files="$command_files $other_files"
 

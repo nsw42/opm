@@ -1,0 +1,21 @@
+#! /bin/sh
+# Runnning `opm help update`, `opm update -h` and `opm update --help` all provide a Usage message
+
+. $TESTDIR/lib_test_functions
+
+ERR=$TMPDIR/$(basename $0).err
+OUT=$TMPDIR/$(basename $0).out
+
+run_happy_case_command_variant 1 $BINDIR/opm help update
+run_happy_case_command_variant 2 $BINDIR/opm update -h
+run_happy_case_command_variant 3 $BINDIR/opm update --help
+
+if ! grep -q ^Usage ${OUT}.1; then
+  echo Usage message not found in output >> $LOGFILE
+  exit $EXIT_TEST_FAILED
+fi
+
+copy_file_to_log ${OUT}.1 "output 1"
+
+check_files_are_equal ${OUT}.1 ${OUT}.2
+check_files_are_equal ${OUT}.1 ${OUT}.3

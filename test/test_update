@@ -1,0 +1,74 @@
+#! /bin/sh
+# Running `opm update` should update the package manager's cache
+
+. $TESTDIR/lib_packages
+. $TESTDIR/lib_test_functions
+
+ERR=$TMPDIR/$(basename $0).err
+OUT=$TMPDIR/$(basename $0).out
+
+# Test setup
+
+# Act
+$BINDIR/opm update > ${OUT}.1 2> ${ERR}.1
+EXIT_CODE=$?
+
+# Test check
+
+check_exit_code $EXIT_CODE 0
+
+if [ "$(uname)" = Darwin ]; then
+  # On a mac, we know it works if running it a second time says "Already up-to-date."
+  # Strictly, this could fail - but we'd have to be incredibly unlucky
+  $BINDIR/opm update > ${OUT}.2 2> ${ERR}.2
+
+  if [ "$(cat ${OUT}.2)" != "Already up-to-date." ]; then
+    echo "Running a second time did not report the cache was up-to-date" >> $LOGFILE
+    exit $EXIT_TEST_FAILED
+  fi
+
+elif [ -f /etc/alpine-release ]; then
+
+  # stdout should say fetch, and the last line should start with OK
+  if ! grep -q ^fetch ${OUT}.1; then
+    echo "failed to find fetch lines in stdout" >> $LOGFILE
+    copy_file_to_log ${OUT}.1 stdout
+    copy_file_to_log ${ERR}.1 stderr
+    exit $EXIT_TEST_FAILED
+  fi
+  if ! grep -q "^OK: [0-9]* distinct packages available" ${OUT}.1; then
+    echo "failed to find a summary line in stdout" >> $LOGFILE
+    copy_file_to_log ${OUT}.1 stdout
+    copy_file_to_log ${ERR}.1 stderr
+    exit $EXIT_TEST_FAILED
+  fi
+
+elif [ -f /etc/debian_version ]; then
+
+  # stdout should end with 'Reading package lists..'
+
+  if [ "$(tail -1 ${OUT}.1)" != "Reading package lists..." ]; then
+    echo "failed to find the expected final line in stdout" >> $LOGFILE
+    copy_file_to_log ${OUT}.1 stdout
+    copy_file_to_log ${ERR}.1 stderr
+    exit $EXIT_TEST_FAILED
+  fi
+
+elif [ -f /etc/redhat-release ]; then
+
+  # Whether its microdnf or yum, stdout should end with "Metadata cache created."
+
+  if [ "$(tail -1 ${OUT}.1)" != "Metadata cache created." ]; then
+    echo "failed to find the expected final line in stdout" >> $LOGFILE
+    copy_file_to_log ${OUT}.1 stdout
+    copy_file_to_log ${ERR}.1 stderr
+    exit $EXIT_TEST_FAILED
+  fi
+
+else
+
+  echo unsupported os >> $LOGFILE
+  exit $EXIT_TEST_FAILED
+fi
+
+exit $EXIT_TEST_PASSED

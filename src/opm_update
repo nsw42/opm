@@ -1,0 +1,81 @@
+#! /bin/sh
+# opm update: update the package manager's cache of available packages
+
+if [ "$1" = "--list-commands" ]; then
+  printf "  %-10s update the package manager's cache of available packages\n"  update
+  exit 0
+fi
+
+if [ "$1" = "-h" -o "$1" = "--help" ]; then
+  echo Usage: opm update
+  exit 0
+fi
+
+# try_FOO -
+#   if package manager FOO is found:
+#     invoke the package manager to install the package(s) specified on the command line
+#     set EXIT_CODE
+#     return 0
+#   otherwise, return 1
+
+try_apk() {
+  if [ -x "$(command -v apk)" ]; then
+    apk update
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+try_aptget() {
+  if [ -x "$(command -v apt-get)" ]; then
+    apt-get update
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+try_brew() {
+  if [ -x "$(command -v brew)" ]; then
+    brew update
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+try_microdnf() {
+  if [ -x "$(command -v microdnf)" ]; then
+    # It's not clear that this is strictly necessary: microdnf updates its caches
+    # when appropriate. But, opm update has presumably been invoked for a reason,
+    # so let's do something.
+    microdnf --refresh makecache
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+try_yum() {
+  if [ -x "$(command -v yum)" ]; then
+    # Similar to microdnf, this might not be necessary.
+    yum makecache
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+if [ $(uname) = Darwin ]; then
+  try_brew "$@" && exit $EXIT_CODE
+else
+  try_apk "$@" && exit $EXIT_CODE
+  try_aptget "$@" && exit $EXIT_CODE
+  try_microdnf "$@" && exit $EXIT_CODE
+  try_yum "$@" && exit $EXIT_CODE
+  try_brew "$@" && exit $EXIT_CODE
+fi
+
+echo No supported package manager installed >&2
+exit 1

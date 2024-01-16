@@ -7,7 +7,7 @@ OUT=$TMPDIR/$(basename $0).out
 
 $BINDIR/opm help > $OUT
 
-for expected_subcmd in help install list uninstall; do
+for expected_subcmd in help install list uninstall update; do
   awk -v cmd=$expected_subcmd '($1 == cmd) {found=1; print "Found expected subcommand " cmd ":"; print;} END {if (found) exit 0; else exit 1}' $OUT >> $LOGFILE
 
   if [ $? != 0 ]; then

@@ -52,7 +52,7 @@ opm [OPTIONS] subcommand
 
 `opm help`
 
-`h` is accepted as an alternative to `help` (i.e. `opm h`)
+`h` is accepted as an alternative to `help` (i.e. `opm h`).
 
 ### Listing installed packages
 
@@ -77,3 +77,9 @@ One or more packages may be specified as arguments to the `install` command.
 One or more packages may be specified on the command line.
 
 `del`, `remove`, `u`, `un` and `uninst` are all accepted as alternatives to `uninstall`. (E.g. `opm u curl`).
+
+### Updating the package manager cache
+
+`opm update`
+
+`upd` is accepted as an alternative to `update`.

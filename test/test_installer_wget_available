@@ -34,7 +34,7 @@ copy_file_to_log $ERR stderr
 
 check_exit_code $EXIT_CODE 0
 
-for command in opm opm_help opm_install opm_list opm_uninstall; do
+for command in opm opm_help opm_install opm_list opm_uninstall opm_update; do
   if ! $command --help > /dev/null 2>&1; then
     echo "$command --help failed" >> $LOGFILE
     exit $EXIT_TEST_FAILED
