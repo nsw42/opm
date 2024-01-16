@@ -4,6 +4,10 @@ IMAGE=$1
 shift
 
 docker pull "$IMAGE" >> $LOGFILE 2>&1
+if [ $? -ne 0 ]; then
+  echo docker pull failed >> $LOGFILE
+  exit 1
+fi
 
 cd $TESTDIR/.. 
 
