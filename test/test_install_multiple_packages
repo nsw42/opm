@@ -38,14 +38,14 @@ if [ $(uname) = Darwin ]; then
 else
   run_apt_get_update_on_debian
 
-  for package in $packages; do
+  for package in $INSTALLABLE_PACKAGES; do
     if $BINDIR/list 2> /dev/null | grep "^${package}\>" > /dev/null; then
       echo $package is already installed before test starts >> $LOGFILE
       exit $EXIT_TEST_FAILED
     fi
   done
 
-  $BINDIR/opm install $packages > $OUT 2> $ERR
+  $BINDIR/opm install $INSTALLABLE_PACKAGES > $OUT 2> $ERR
   EXIT_CODE=$?
 
   copy_file_to_log $OUT stdout
@@ -53,7 +53,7 @@ else
 
   check_exit_code $EXIT_CODE 0
 
-  for package in $packages; do
+  for package in $INSTALLABLE_PACKAGES; do
     if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then
       # Installation looks to have been successful
       $BINDIR/opm uninstall $package > /dev/null 2>&1  # not part of the test, so ignore whether it works or not
