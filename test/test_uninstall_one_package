@@ -1,18 +1,17 @@
 #! /bin/sh
 # Running `opm uninstall package` uninstalls that package
 
+. $TESTDIR/lib_packages
 . $TESTDIR/lib_test_functions
 
 ERR=$TMPDIR/$(basename $0).err
 OUT=$TMPDIR/$(basename $0).out
 
 if [ $(uname) = Darwin ]; then
-  . $TESTDIR/lib_macos
-
   # Test setup - identify a package we can try to uninstall, and install it if necessary
   to_install=
   to_uninstall=
-  for package in $MACOS_INSTALLABLE_PACKAGES; do
+  for package in $INSTALLABLE_PACKAGES; do
     if brew list "$package" > /dev/null 2>&1; then
       # it's already installed
       to_uninstall=$package
@@ -59,13 +58,11 @@ if [ $(uname) = Darwin ]; then
 
   exit 0
 else
-  . $TESTDIR/lib_linux
-
   # Test setup - identify a package we can try to uninstall, and install it if necessary
 
   run_apt_get_update_on_debian
 
-  package=$(echo $LINUX_INSTALLABLE_PACKAGES | sed 's/ .*//')  # just take the first one
+  package=$(echo $INSTALLABLE_PACKAGES | cut -d ' ' -f 1)
 
   echo Installing $package >> $LOGFILE
   $BINDIR/opm install $package > /dev/null 2>&1

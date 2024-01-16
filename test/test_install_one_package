@@ -1,14 +1,14 @@
 #! /bin/sh
 # Running `opm install package` installs that package
 
+. $TESTDIR/lib_packages
 . $TESTDIR/lib_test_functions
 
 ERR=$TMPDIR/$(basename $0).err
 OUT=$TMPDIR/$(basename $0).out
 
 if [ $(uname) = Darwin ]; then
-  . $TESTDIR/lib_macos
-  for package in $MACOS_INSTALLABLE_PACKAGES; do
+  for package in $INSTALLABLE_PACKAGES; do
     if brew list "$package" > /dev/null 2>&1; then
       # Package is already installed
       continue
@@ -37,10 +37,9 @@ if [ $(uname) = Darwin ]; then
   echo "Could not find a package to install - everything attempted was already installed" >> $LOGFILE
   exit 1
 else
-  . $TESTDIR/lib_linux
   run_apt_get_update_on_debian
 
-  package=$(echo $LINUX_INSTALLABLE_PACKAGES | sed 's/ .*//')  # just take the first one
+  package=$(echo $INSTALLABLE_PACKAGES | sed 's/ .*//')  # just take the first one
   if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then
     echo $package is already installed before test starts >> $LOGFILE
     exit 1

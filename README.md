@@ -56,9 +56,11 @@ opm [OPTIONS] subcommand
 
 ### Listing installed packages
 
-`opm list`
+`opm list` to show all packages or `opm list package...` to show selected packages.
 
 `l` is accepted as an alternative to `list`.
+
+NB The behaviour of `opm list package` when package is not installed currently varies between platforms/package managers: `brew` (e.g. on macOS) shows only the installed packages, so `opm list uninstalled_package` would show nothing, whereas other platforms show the package if it is recognised (e.g. available to be installed).
 
 ### Installing packages
 

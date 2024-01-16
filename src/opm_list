@@ -1,5 +1,6 @@
 #! /bin/sh
 # opm list: list install packages
+# opm list package...: list just those packages
 
 if [ "$1" = "--list-commands" ]; then
   printf "  %-10s list installed packages\n"  list
@@ -7,7 +8,7 @@ if [ "$1" = "--list-commands" ]; then
 fi
 
 if [ "$1" = "-h" -o "$1" = "--help" ]; then
-  echo list help
+  echo Usage: opm list [package...]
   exit 0
 fi
 
@@ -20,7 +21,7 @@ fi
 
 try_apk() {
   if [ -x "$(command -v apk)" ]; then
-    apk list --installed
+    apk list --installed "$@"
     EXIT_CODE=$?
     return 0
   fi
@@ -29,7 +30,7 @@ try_apk() {
 
 try_apt() {
   if [ -x "$(command -v apt)" ]; then
-    apt list --installed
+    apt list --installed "$@"
     EXIT_CODE=$?
     return 0
   fi
@@ -38,7 +39,20 @@ try_apt() {
 
 try_brew() {
   if [ -x "$(command -v brew)" ]; then
-    brew list
+    # brew behaves differently to the other package managers:
+    # brew list pkg shows the *contents* of pkg
+    if [ $# -eq 0 ]; then
+      brew list
+    else
+      pattern="^("
+      join=
+      for package in "$@"; do
+        pattern="${pattern}${join}${package}"
+        join="|"
+      done
+      pattern="${pattern})\$"
+      brew list | grep -E "$pattern"
+    fi
     EXIT_CODE=$?
     return 0
   fi
@@ -46,11 +60,11 @@ try_brew() {
 }
 
 if [ $(uname) = Darwin ]; then
-  try_brew && exit $EXIT_CODE
+  try_brew "$@" && exit $EXIT_CODE
 else
-  try_apk && exit $EXIT_CODE
-  try_apt && exit $EXIT_CODE
-  try_brew && exit $EXIT_CODE
+  try_apk "$@" && exit $EXIT_CODE
+  try_apt "$@" && exit $EXIT_CODE
+  try_brew "$@" && exit $EXIT_CODE
 fi
 
 echo No supported package manager installed >&2

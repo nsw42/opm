@@ -1,6 +1,7 @@
 #! /bin/sh
 # Running `opm install package` twice exits with code zero, and the package still installed
 
+. $TESTDIR/lib_packages
 . $TESTDIR/lib_test_functions
 
 ERR=$TMPDIR/$(basename $0).err
@@ -8,10 +9,8 @@ OUT=$TMPDIR/$(basename $0).out
 
 # Platform specific setup: figure out a package to install, and do pre-launch checks
 if [ $(uname) = Darwin ]; then
-  . $TESTDIR/lib_macos
-
   test_setup() {
-    for package in $MACOS_INSTALLABLE_PACKAGES; do
+    for package in $INSTALLABLE_PACKAGES; do
       if brew list "$package" > /dev/null 2>&1; then
         # Package is already installed
         continue
@@ -24,11 +23,9 @@ if [ $(uname) = Darwin ]; then
   }
   test_setup
 else
-  . $TESTDIR/lib_linux
-
   run_apt_get_update_on_debian
 
-  package=$(echo $LINUX_INSTALLABLE_PACKAGES | sed 's/ .*//')  # just take the first one: the Docker image ensures a clean slate
+  package=$(echo $INSTALLABLE_PACKAGES | sed 's/ .*//')  # just take the first one: the Docker image ensures a clean slate
   if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then
     echo $package is already installed before test starts >> $LOGFILE
     exit 1

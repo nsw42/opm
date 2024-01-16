@@ -1,0 +1,31 @@
+# lib_packages
+# Definitions related to installable and installed packages
+
+
+if [ $(uname) = Darwin ]; then
+  # There are no guarantees about what's already installed,
+  # and what can be installed/uninstalled without disrupting the
+  # host platform. For now, I've identified a few that I don't
+  # have and that install quite quickly.
+  INSTALLABLE_PACKAGES="libpq libmd libxc"
+
+  # Similarly, this is tied to my dev machine more than is desirable
+  INSTALLED_PACKAGES="git glib jq"
+else
+  # None of alpine, debian, ubuntu have gawk out of the box
+  # But, debian/ubuntu don't even know about it out of the box
+  if [ -f /etc/debian_version ]; then
+    INSTALLABLE_PACKAGES="gawk bzip2 libadns1 libao4"
+    INSTALLED_PACKAGES="grep gzip tar"
+  else
+    INSTALLABLE_PACKAGES="gawk bzip2 libpng libzip"
+    INSTALLED_PACKAGES="busybox libc-utils musl"
+  fi
+fi
+
+
+run_apt_get_update_on_debian() {
+  if [ -f /etc/debian_version ]; then
+    apt-get update > /dev/null 2>&1
+  fi
+}

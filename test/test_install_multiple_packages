@@ -1,14 +1,14 @@
 #! /bin/sh
 # Running `opm install package1 package2 package3` installs those packages
 
+. $TESTDIR/lib_packages
 . $TESTDIR/lib_test_functions
 
 ERR=$TMPDIR/$(basename $0).err
 OUT=$TMPDIR/$(basename $0).out
 
 if [ $(uname) = Darwin ]; then
-  . $TESTDIR/lib_macos
-  for package in $MACOS_INSTALLABLE_PACKAGES; do
+  for package in $INSTALLABLE_PACKAGES; do
     if brew list | grep "^${package}\$" > /dev/null; then
       echo $package is already installed before test starts >> $LOGFILE
       exit 1
@@ -36,7 +36,6 @@ if [ $(uname) = Darwin ]; then
 
   exit 0
 else
-  . $TESTDIR/lib_linux
   run_apt_get_update_on_debian
 
   for package in $packages; do

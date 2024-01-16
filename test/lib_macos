@@ -1,8 +1,0 @@
-# lib_macos
-# Useful definitions for tests running on macOS
-
-# There are no guarantees about what's already installed,
-# and what can be installed/uninstalled without disrupting the
-# host platform. For now, I've identified a few that I don't
-# have and that install quite quickly.
-MACOS_INSTALLABLE_PACKAGES="libpq libmd libxc"

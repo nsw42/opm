@@ -23,7 +23,7 @@ if [ $(uname) = Darwin ]; then
   done
 else
   # Sigh. Install curl
-  . $TESTDIR/lib_linux
+  . $TESTDIR/lib_packages
   run_apt_get_update_on_debian
   apk add curl > /dev/null 2>&1 || apt-get install --yes curl > /dev/null 2>&1 || brew install curl > /dev/null 2>&1
   if [ ! -x $(command -v curl) ]; then
