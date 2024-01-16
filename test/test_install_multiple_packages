@@ -45,7 +45,7 @@ else
     fi
   done
 
-  $BINDIR/opm install $INSTALLABLE_PACKAGES > $OUT 2> $ERR
+  $BINDIR/opm install --yes $INSTALLABLE_PACKAGES > $OUT 2> $ERR
   EXIT_CODE=$?
 
   copy_file_to_log $OUT stdout
@@ -56,7 +56,7 @@ else
   for package in $INSTALLABLE_PACKAGES; do
     if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then
       # Installation looks to have been successful
-      $BINDIR/opm uninstall $package > /dev/null 2>&1  # not part of the test, so ignore whether it works or not
+      $BINDIR/opm uninstall --yes $package > /dev/null 2>&1  # not part of the test, so ignore whether it works or not
     else
       echo "opm install $package failed" >> $LOGFILE
       exit $EXIT_TEST_FAILED

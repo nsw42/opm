@@ -64,7 +64,11 @@ NB The behaviour of `opm list package` when package is not installed currently v
 
 ### Installing packages
 
-`opm install PACKAGE...`
+`opm install [OPTIONS] PACKAGE...`
+
+Options:
+
+* `-y` or `--yes`: don't prompt for confirmation before acting. (Behaviour without this flag varies between package managers)
 
 One or more packages may be specified as arguments to the `install` command.
 
@@ -72,8 +76,11 @@ One or more packages may be specified as arguments to the `install` command.
 
 ### Uninstalling packages
 
-`opm uninstall PACKAGE...`
+`opm uninstall [OPTIONS] PACKAGE...`
 
+Options:
+
+* `-y` or `--yes`: don't prompt for confirmation before acting. (Behaviour without this flag varies between package managers)
 One or more packages may be specified on the command line.
 
 `del`, `remove`, `u`, `un` and `uninst` are all accepted as alternatives to `uninstall`. (E.g. `opm u curl`).

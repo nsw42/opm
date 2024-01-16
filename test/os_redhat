@@ -1,0 +1,8 @@
+#! /bin/sh
+#
+# Run the test suite in an Oracle Linux docker image
+
+for RHversion in ubi9 ubi9-minimal; do
+  echo Red Hat $RHversion | tee -a $LOGFILE
+  $TESTDIR/run_tests_in_docker redhat/$RHversion "$@"
+done
