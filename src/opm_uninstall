@@ -45,11 +45,31 @@ try_brew() {
   return 1
 }
 
+try_microdnf() {
+  if [ -x "$(command -v microdnf)" ]; then
+    microdnf remove "$@"
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
+try_yum() {
+  if [ -x "$(command -v yum)" ]; then
+    yum remove "$@"
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
 if [ $(uname) = Darwin ]; then
   try_brew "$@" && exit $EXIT_CODE
 else
   try_apk "$@" && exit $EXIT_CODE
   try_aptget "$@" && exit $EXIT_CODE
+  try_microdnf "$@" && exit $EXIT_CODE
+  try_yum "$@" && exit $EXIT_CODE
   try_brew "$@" && exit $EXIT_CODE
 fi
 

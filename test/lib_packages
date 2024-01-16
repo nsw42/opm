@@ -1,5 +1,6 @@
 # lib_packages
 # Definitions related to installable and installed packages
+# vim: ft=sh
 
 
 if [ $(uname) = Darwin ]; then
@@ -17,9 +18,15 @@ else
   if [ -f /etc/debian_version ]; then
     INSTALLABLE_PACKAGES="gawk bzip2 libadns1 libao4"
     INSTALLED_PACKAGES="grep gzip tar"
-  else
+  elif [ -f /etc/alpine-release ]; then
     INSTALLABLE_PACKAGES="gawk bzip2 libpng libzip"
     INSTALLED_PACKAGES="busybox libc-utils musl"
+  elif [ -f /etc/redhat-release ]; then
+    INSTALLABLE_PACKAGES="less libpng libzip xz"
+    INSTALLED_PACKAGES="glibc rpm tar"
+  else
+    echo Unsupported OS found >> $LOGFILE
+    exit 1
   fi
 fi
 

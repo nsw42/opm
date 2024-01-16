@@ -9,8 +9,8 @@
 ERR=$TESTDIR/tmp/$(basename $0).err
 OUT=$TESTDIR/tmp/$(basename $0).out
 
-if [ $(uname) = Darwin ]; then
-  echo "curl is provided by the OS, and is preferentially used to wget" >> $LOGFILE
+if [ $(uname) = Darwin -o  -f /etc/redhat-release ]; then
+  echo "curl is provided by the OS, and is used in preference to wget" >> $LOGFILE
   echo "Skipping test" >> $LOGFILE
   exit $EXIT_TEST_SKIPPED
 else

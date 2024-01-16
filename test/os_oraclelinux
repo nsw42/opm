@@ -1,0 +1,9 @@
+#! /bin/sh
+#
+# Run the test suite in an Oracle Linux docker image
+
+for OLversion in 9 9-slim; do
+  echo Oracle Linux $OLversion | tee -a $LOGFILE
+  $TESTDIR/run_tests_in_docker oraclelinux:$OLversion "$@"
+done
+

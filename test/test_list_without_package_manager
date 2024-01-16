@@ -7,11 +7,24 @@ ERR=$TMPDIR/$(basename $0).err
 OUT=$TMPDIR/$(basename $0).out
 
 # Debian has apt in /usr/bin, so hide it for the duration of
-# running `opm list`
-[ $(uname) = Linux -a -f /usr/bin/apt ] && mv /usr/bin/apt /usr/bin/apt.bak
+# running `opm list`. Ditto rpm/yum/microdnf on Oracle Linux
+if [ $(uname) = Linux ]; then
+  FILES_TO_HIDE="/usr/bin/apt /usr/bin/rpm /usr/bin/yum /usr/bin/microdnf"
+  for f in $FILES_TO_HIDE; do
+    if [ -f "$f" ]; then
+      mv $f ${f}.bak
+    fi
+  done
+fi
+
 PATH=/bin:/usr/bin $BINDIR/opm list > $OUT 2> $ERR
 CODE=$?
-[ -f /usr/bin/apt.bak ] && mv /usr/bin/apt.bak /usr/bin/apt
+
+for f in $FILES_TO_HIDE; do
+  if [ -f "${f}.bak" ]; then
+    mv "${f}.bak" "$f"
+  fi
+done
 
 copy_file_to_log "$ERR" stderr
 

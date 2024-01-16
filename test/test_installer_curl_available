@@ -9,19 +9,13 @@
 ERR=$TESTDIR/tmp/$(basename $0).err
 OUT=$TESTDIR/tmp/$(basename $0).out
 
-if [ $(uname) = Darwin ]; then
-  if [ ! -x $(command -v curl) ]; then
+if [ ! -x "$(command -v curl)" ]; then
+  if [ $(uname) = Darwin ]; then
     echo "curl not available, even though it's part of the standard macOS install"
     echo "Aborting"
     exit $EXIT_TEST_FAILED
   fi
 
-  # Remove any existing binaries
-  for f in $(ls $BINDIR); do
-    f=/usr/local/bin/$f
-    [ -f "$f" ] && rm -f $f
-  done
-else
   # Sigh. Install curl
   . $TESTDIR/lib_packages
   run_apt_get_update_on_debian
@@ -32,6 +26,12 @@ else
     exit $EXIT_TEST_FAILED
   fi
 fi
+
+# Remove any existing binaries - should only be relevant on the host
+for f in $(ls $BINDIR); do
+  f=/usr/local/bin/$f
+  [ -f "$f" ] && rm -f $f
+done
 
 # Simple happy path test: run the installer, and check that the binaries are available
 $ROOTDIR/install.sh -v > $OUT 2> $ERR

@@ -59,11 +59,25 @@ try_brew() {
   return 1
 }
 
+try_rpm() {
+  if [ -x "$(command -v rpm)" ]; then
+    if [ $# -eq 0 ]; then
+      rpm -qa
+    else
+      rpm -q "$@"
+    fi
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
 if [ $(uname) = Darwin ]; then
   try_brew "$@" && exit $EXIT_CODE
 else
   try_apk "$@" && exit $EXIT_CODE
   try_apt "$@" && exit $EXIT_CODE
+  try_rpm "$@" && exit $EXIT_CODE
   try_brew "$@" && exit $EXIT_CODE
 fi
 

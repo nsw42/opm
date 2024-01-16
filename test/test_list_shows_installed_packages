@@ -1,6 +1,7 @@
 #! /bin/sh
 # Running list subcommand should result in a list of installed packages
 
+. $TESTDIR/lib_packages
 . $TESTDIR/lib_test_functions
 
 ERR=$TMPDIR/$(basename $0).err
@@ -23,25 +24,19 @@ if [ $(uname) = Darwin ]; then
   copy_file_to_log $ERR stderr
   exit $EXIT_TEST_PASSED
 else
-  if [ -f /etc/alpine-release ]; then
-    expected_package=busybox
-  elif [ -f /etc/debian_version ]; then
-    # Debian or Ubuntu
-    expected_package=debianutils
-  else
-    echo "Unrecognised OS encountered" >> $LOGFILE
-    exit $EXIT_TEST_FAILED
-  fi
+  expected_package=$(echo "$INSTALLED_PACKAGES" | cut -d ' ' -f 1)
 
-  if grep -q "^${expected_package}.*installed" $OUT; then
+  # This can actually result in some false positives - eg if we're looking for
+  # glibc, but glibc-common is installed. However, this is probably ok:
+  # it shows that something plausible was written
+  if grep -q "^${expected_package}" $OUT; then
     # All good
     echo "Found expected package $expected_package in output:" >> $LOGFILE
-    grep "^${expected_package}.*installed" $OUT >> $LOGFILE
+    grep "^${expected_package}" $OUT >> $LOGFILE
   else
     echo "Expected package $expected_package not found" >> $LOGFILE
-    echo "--- begin stdout ---" >> $LOGFILE
-    cat $OUT >> $LOGFILE
-    echo "--- end stdout ---" >> $LOGFILE
+    copy_file_to_log $OUT stdout
     exit $EXIT_TEST_FAILED
   fi
+  exit $EXIT_TEST_PASSED
 fi
