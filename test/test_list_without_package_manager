@@ -13,6 +13,8 @@ PATH=/bin:/usr/bin $BINDIR/opm list > $OUT 2> $ERR
 CODE=$?
 [ -f /usr/bin/apt.bak ] && mv /usr/bin/apt.bak /usr/bin/apt
 
+copy_file_to_log "$ERR" stderr
+
 check_file_is_empty "$OUT" stdout
 
 check_file_is_not_empty "$ERR" stderr
