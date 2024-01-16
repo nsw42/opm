@@ -32,7 +32,9 @@ for f in ${src_dir}/opm_*; do
       join=", "
     fi
   done < ${src_dir}/opm.aliases
-  printf "  %-10s (Aliases: %s)\n" "" "$aliases"
+  if [ -n "$aliases" ]; then
+    printf "  %-10s (Aliases: %s)\n" "" "$aliases"
+  fi
 done
 
 echo
