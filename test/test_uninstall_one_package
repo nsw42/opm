@@ -60,7 +60,7 @@ if [ $(uname) = Darwin ]; then
 else
   # Test setup - identify a package we can try to uninstall, and install it if necessary
 
-  run_apt_get_update_on_debian
+  init_container_for_tests
 
   package=$(echo $INSTALLABLE_PACKAGES | cut -d ' ' -f 1)
 

@@ -23,7 +23,7 @@ if [ $(uname) = Darwin ]; then
   }
   test_setup
 else
-  run_apt_get_update_on_debian
+  init_container_for_tests
 
   package=$(echo $INSTALLABLE_PACKAGES | sed 's/ .*//')  # just take the first one: the Docker image ensures a clean slate
   if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then

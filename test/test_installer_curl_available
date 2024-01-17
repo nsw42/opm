@@ -18,7 +18,7 @@ if [ ! -x "$(command -v curl)" ]; then
 
   # Sigh. Install curl
   . $TESTDIR/lib_packages
-  run_apt_get_update_on_debian
+  init_container_for_tests
   apk add curl > /dev/null 2>&1 || apt-get install --yes curl > /dev/null 2>&1 || brew install curl > /dev/null 2>&1
   if [ ! -x $(command -v curl) ]; then
     echo "Test setup failed: unable to install curl"

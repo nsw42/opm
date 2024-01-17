@@ -36,7 +36,7 @@ if [ $(uname) = Darwin ]; then
 
   exit $EXIT_TEST_PASSED
 else
-  run_apt_get_update_on_debian
+  init_container_for_tests
 
   for package in $INSTALLABLE_PACKAGES; do
     if $BINDIR/list 2> /dev/null | grep "^${package}\>" > /dev/null; then

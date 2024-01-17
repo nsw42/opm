@@ -7,7 +7,7 @@
 ERR=$TMPDIR/$(basename $0).err
 OUT=$TMPDIR/$(basename $0).out
 
-run_apt_get_update_on_debian
+init_container_for_tests
 
 PACKAGE_1=$(echo "$INSTALLED_PACKAGES" | cut -d ' ' -f 1)
 PACKAGE_2=$(echo "$INSTALLED_PACKAGES" | cut -d ' ' -f 2)

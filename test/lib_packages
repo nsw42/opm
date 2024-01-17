@@ -24,6 +24,9 @@ else
   elif [ -f /etc/redhat-release ]; then
     INSTALLABLE_PACKAGES="less libpng libzip xz"
     INSTALLED_PACKAGES="glibc rpm tar"
+  elif [ -f /etc/arch-release ]; then
+    INSTALLABLE_PACKAGES="less libpng libzip xz"
+    INSTALLED_PACKAGES="glibc pacman tar"
   else
     echo Unsupported OS found >> $LOGFILE
     exit 1
@@ -31,8 +34,15 @@ else
 fi
 
 
-run_apt_get_update_on_debian() {
+init_container_for_tests() {
   if [ -f /etc/debian_version ]; then
+    # Debian/Ubuntu doesn't have any knowledge of installable packages until the cache is updated
     apt-get update > /dev/null 2>&1
+  elif [ -f /etc/arch-release ]; then
+    # At the time of writing, the archlinuxarm image needs its keys updating - see https://archlinuxarm.org/forum/viewtopic.php?t=16707&p=72007
+    # (This might be a temporary problem)
+    GNUPGHOME=/etc/pacman.d/gnupg/ gpg --refresh-keys --allow-weak-key-signatures > /dev/null 2>&1
+
+    pacman -Sy > /dev/null 2>&1
   fi
 }

@@ -1,0 +1,6 @@
+#! /bin/sh
+#
+# Run the test suite in an Arch Linux docker image
+# NB. Does not use the archlinux image because that does not have an arm64 version
+
+$TESTDIR/run_tests_in_docker menci/archlinuxarm "$@"

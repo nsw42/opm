@@ -64,6 +64,21 @@ try_microdnf() {
   return 1
 }
 
+try_pacman() {
+  if [ -x "$(command -v pacman)" ]; then
+    # Note that this seems to upgrade packages that are already installed.
+    # My pacman foo is limited, so I'm not sure how to install, but not upgrade, packages.
+    # The --needed flag stops reinstallation of up-to-date packages.
+    # It would be possible to iterate through $@, but that could result in a
+    # lot of prompting for confirmation, and muddies the exit code. So, for now
+    # at least, this just takes the simple option
+    pacman -S --needed $pacman_opts "$@"
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
 try_yum() {
   if [ -x "$(command -v yum)" ]; then
     local yum_opts
@@ -83,6 +98,7 @@ else
   try_apk "$@" && exit $EXIT_CODE
   try_aptget "$@" && exit $EXIT_CODE
   try_microdnf "$@" && exit $EXIT_CODE
+  try_pacman "$@" && exit $EXIT_CODE
   try_yum "$@" && exit $EXIT_CODE
   try_brew "$@" && exit $EXIT_CODE
 fi

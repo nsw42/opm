@@ -57,6 +57,15 @@ try_microdnf() {
   return 1
 }
 
+try_pacman() {
+  if [ -x "$(command -v pacman)" ]; then
+    pacman -Sy "$@"
+    EXIT_CODE=$?
+    return 0
+  fi
+  return 1
+}
+
 try_yum() {
   if [ -x "$(command -v yum)" ]; then
     # Similar to microdnf, this might not be necessary.
@@ -73,6 +82,7 @@ else
   try_apk "$@" && exit $EXIT_CODE
   try_aptget "$@" && exit $EXIT_CODE
   try_microdnf "$@" && exit $EXIT_CODE
+  try_pacman "$@" && exit $EXIT_CODE
   try_yum "$@" && exit $EXIT_CODE
   try_brew "$@" && exit $EXIT_CODE
 fi

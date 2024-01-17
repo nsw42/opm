@@ -11,6 +11,8 @@ It does _not_ install package managers, or configure package managers, or attemp
 * Alpine [apk](https://docs.alpinelinux.org/user-handbook/0.1a/Working/apk.html)
 * Debian/Ubuntu [apt](https://en.wikipedia.org/wiki/APT_(software))
 * macOS (or Linux) [Homebrew](https://brew.sh) 
+* RedHat/Oracle Linux [yum](https://linux.die.net/man/8/yum) and [microdnf](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/building_running_and_managing_containers/assembly_adding-software-to-a-ubi-container_building-running-and-managing-containers)
+* ArchLinux [pacman](https://wiki.archlinux.org/title/Pacman)
 
 ... more to come
 
@@ -73,6 +75,11 @@ Options:
 One or more packages may be specified as arguments to the `install` command.
 
 `add`, `i` and `inst` are all accepted as alternatives to `install`. (E.g. `opm i curl`).
+
+Variation between package managers:
+
+* Some package managers prompt for confirmation if the `-y` / `--yes` option is not passed to opm; others just go ahead and do the install.
+* Some package managers (e.g. pacman/ArchLinux) will update an already installed package, whereas others will simply report that it's already installed.
 
 ### Uninstalling packages
 

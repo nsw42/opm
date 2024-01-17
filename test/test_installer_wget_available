@@ -9,14 +9,14 @@
 ERR=$TESTDIR/tmp/$(basename $0).err
 OUT=$TESTDIR/tmp/$(basename $0).out
 
-if [ $(uname) = Darwin -o  -f /etc/redhat-release ]; then
+if [ $(uname) = Darwin -o  -f /etc/redhat-release -o -f /etc/arch-release ]; then
   echo "curl is provided by the OS, and is used in preference to wget" >> $LOGFILE
   echo "Skipping test" >> $LOGFILE
   exit $EXIT_TEST_SKIPPED
 else
   # Sigh. Install wget
   . $TESTDIR/lib_packages
-  run_apt_get_update_on_debian
+  init_container_for_tests
   apk add wget > /dev/null 2>&1 || apt-get install --yes wget > /dev/null 2>&1 || brew install wget > /dev/null 2>&1
   if [ ! -x $(command -v wget) ]; then
     echo "Test setup failed: unable to install wget"

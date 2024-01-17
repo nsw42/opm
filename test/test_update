@@ -65,6 +65,17 @@ elif [ -f /etc/redhat-release ]; then
     exit $EXIT_TEST_FAILED
   fi
 
+elif [ -f /etc/arch-release ]; then
+
+  # The first line of output should be ':: Synchronizing package databases...'
+
+  if [ "$(head -1 ${OUT}.1)" != ":: Synchronizing package databases..." ]; then
+    echo "failed to find the expected output line" >> $LOGFILE
+    copy_file_to_log ${OUT}.1 "stdout"
+    copy_file_to_log ${OUT}.1 "stderr"
+    exit $EXIT_TEST_FAILED
+  fi
+
 else
 
   echo unsupported os >> $LOGFILE

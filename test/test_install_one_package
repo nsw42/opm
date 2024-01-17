@@ -37,7 +37,7 @@ if [ $(uname) = Darwin ]; then
   echo "Could not find a package to install - everything attempted was already installed" >> $LOGFILE
   exit $EXIT_TEST_FAILED
 else
-  run_apt_get_update_on_debian
+  init_container_for_tests
 
   package=$(echo $INSTALLABLE_PACKAGES | sed 's/ .*//')  # just take the first one
   if $BINDIR/opm list 2> /dev/null | grep "^${package}\>" > /dev/null; then
