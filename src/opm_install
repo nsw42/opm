@@ -72,6 +72,10 @@ try_pacman() {
     # It would be possible to iterate through $@, but that could result in a
     # lot of prompting for confirmation, and muddies the exit code. So, for now
     # at least, this just takes the simple option
+    local pacman_opts
+    if $assume_yes; then
+      pacman_opts=--noconfirm
+    fi
     pacman -S --needed $pacman_opts "$@"
     EXIT_CODE=$?
     return 0
