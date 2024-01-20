@@ -14,8 +14,7 @@ PACKAGE_2=$(echo "$INSTALLED_PACKAGES" | cut -d ' ' -f 2)
 $BINDIR/opm list $PACKAGE_1 $PACKAGE_2 > $OUT 2> $ERR
 EXIT_CODE=$?
 
-copy_file_to_log $OUT stdout
-copy_file_to_log $ERR stderr
+copy_stdout_stderr_to_log $OUT $ERR
 check_exit_code $EXIT_CODE 0
 
 for package in $PACKAGE_1 $PACKAGE_2; do

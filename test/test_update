@@ -32,14 +32,12 @@ elif [ -f /etc/alpine-release ]; then
   # stdout should say fetch, and the last line should start with OK
   if ! grep -q ^fetch ${OUT}.1; then
     echo "failed to find fetch lines in stdout" >> $LOGFILE
-    copy_file_to_log ${OUT}.1 stdout
-    copy_file_to_log ${ERR}.1 stderr
+    copy_stdout_stderr_to_log ${OUT}.1 ${ERR}.1
     exit $EXIT_TEST_FAILED
   fi
   if ! grep -q "^OK: [0-9]* distinct packages available" ${OUT}.1; then
     echo "failed to find a summary line in stdout" >> $LOGFILE
-    copy_file_to_log ${OUT}.1 stdout
-    copy_file_to_log ${ERR}.1 stderr
+    copy_stdout_stderr_to_log ${OUT}.1 ${ERR}.1
     exit $EXIT_TEST_FAILED
   fi
 
@@ -49,8 +47,7 @@ elif [ -f /etc/debian_version ]; then
 
   if [ "$(tail -1 ${OUT}.1)" != "Reading package lists..." ]; then
     echo "failed to find the expected final line in stdout" >> $LOGFILE
-    copy_file_to_log ${OUT}.1 stdout
-    copy_file_to_log ${ERR}.1 stderr
+    copy_stdout_stderr_to_log ${OUT}.1 ${ERR}.1
     exit $EXIT_TEST_FAILED
   fi
 
@@ -60,8 +57,7 @@ elif [ -f /etc/redhat-release ]; then
 
   if [ "$(tail -1 ${OUT}.1)" != "Metadata cache created." ]; then
     echo "failed to find the expected final line in stdout" >> $LOGFILE
-    copy_file_to_log ${OUT}.1 stdout
-    copy_file_to_log ${ERR}.1 stderr
+    copy_stdout_stderr_to_log ${OUT}.1 ${ERR}.1
     exit $EXIT_TEST_FAILED
   fi
 
@@ -71,8 +67,7 @@ elif [ -f /etc/arch-release ]; then
 
   if [ "$(head -1 ${OUT}.1)" != ":: Synchronizing package databases..." ]; then
     echo "failed to find the expected output line" >> $LOGFILE
-    copy_file_to_log ${OUT}.1 "stdout"
-    copy_file_to_log ${OUT}.1 "stderr"
+    copy_stdout_stderr_to_log ${OUT}.1 ${OUT}.1
     exit $EXIT_TEST_FAILED
   fi
 
@@ -82,8 +77,7 @@ elif grep -q opensuse /etc/os-release; then
 
   if [ "$(tail -1 ${OUT}.1)" != "All repositories have been refreshed." ]; then
     echo "failed to find the expected final line in stdout" >> $LOGFILE
-    copy_file_to_log ${OUT}.1 stdout
-    copy_file_to_log ${ERR}.1 stderr
+    copy_stdout_stderr_to_log ${OUT}.1 ${ERR}.1
     exit $EXIT_TEST_FAILED
   fi
 

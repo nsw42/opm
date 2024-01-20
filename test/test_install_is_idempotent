@@ -36,8 +36,7 @@ for pass in 1 2; do
   $BINDIR/opm install --yes $package > $OUT.$pass 2> $ERR.$pass
   EXIT_CODE=$?
 
-  copy_file_to_log $OUT.$pass stdout
-  copy_file_to_log $ERR.$pass stderr
+  copy_stdout_stderr_to_log $OUT.$pass $ERR.$pass
 
   check_exit_code $EXIT_CODE 0
 done

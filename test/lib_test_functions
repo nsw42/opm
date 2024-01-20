@@ -83,6 +83,12 @@ copy_file_to_log() {
 }
 
 
+copy_stdout_stderr_to_log() {
+  copy_file_to_log $1 stdout
+  copy_file_to_log $2 stderr
+}
+
+
 run_happy_case_command_variant() {
   # assumes that ERR and OUT vars are defined
   suffix=$1

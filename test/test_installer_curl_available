@@ -37,8 +37,7 @@ done
 $ROOTDIR/install.sh -v > $OUT 2> $ERR
 EXIT_CODE=$?
 
-copy_file_to_log $OUT stdout
-copy_file_to_log $ERR stderr
+copy_stdout_stderr_to_log $OUT $ERR
 
 check_exit_code $EXIT_CODE 0
 
