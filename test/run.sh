@@ -45,15 +45,29 @@ if [ "${#TESTS[@]}" -eq 0 ]; then
   TESTS=($(ls "$TESTDIR" | grep ^test_))
 fi
 
+
+# Start the tests running
+#
+declare -a RESULTS
+
+for os in "${OSS[@]}"; do
+  export LOGFILE=$LOGDIR/${os}.log
+  echo > $LOGFILE
+  RESULT_FILE=$TMPDIR/${os}.results
+  echo $os > $RESULT_FILE
+  "$TESTDIR/$os" "${TESTS[@]}" >> $RESULT_FILE &
+  RESULTS+=($RESULT_FILE)
+done
+
+# Wait for the tests to finish and echo the results
+
+wait
+
 # sep=70*"="
 sep="=========="
 sep="${sep}${sep}${sep}${sep}${sep}${sep}${sep}"
-
-for os in "${OSS[@]}"; do
-  echo $os
-  export LOGFILE=$LOGDIR/${os}.log
-  echo > $LOGFILE
-  "$TESTDIR/$os" "${TESTS[@]}"
+for result in "${RESULTS[@]}"; do
+  cat $result
   echo "$sep"
   echo
 done

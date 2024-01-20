@@ -9,6 +9,10 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+SUBDIR=$(echo "$IMAGE" | tr -Cd 'a-zA-Z0-9_-')
+mkdir -p $LOGDIR/$SUBDIR
+mkdir -p $TMPDIR/$SUBDIR
+
 cd $TESTDIR/.. 
 
 INSTALL_TESTS=$(echo "$@" | tr ' ' '\n' | grep ^test_installer)
@@ -21,8 +25,8 @@ if [ -n "$INSTALL_TESTS" ]; then
       -w / \
       -e ROOTDIR=/opm \
       -e TESTDIR=/opm/test \
-      -e LOGDIR=/opm/test/log \
-      -e LOGFILE=/opm/test/log/$(basename $LOGFILE) \
+      -e LOGDIR=/opm/test/log/$SUBDIR \
+      -e LOGFILE=/opm/test/log/$SUBDIR/$(basename $LOGFILE) \
       -e LOGCOLOUR=${LOGCOLOUR:-$DEFAULT_LOGCOLOUR} \
       --entrypoint /opm/test/run_tests \
       "$IMAGE" \
@@ -37,9 +41,9 @@ docker run --rm \
   -w /test \
   -e BINDIR=/opm \
   -e TESTDIR=/test \
-  -e LOGDIR=/test/log \
-  -e TMPDIR=/test/tmp \
-  -e LOGFILE=/test/log/$(basename $LOGFILE) \
+  -e LOGDIR=/test/log/$SUBDIR \
+  -e TMPDIR=/test/tmp/$SUBDIR \
+  -e LOGFILE=/test/log/$SUBDIR/$(basename $LOGFILE) \
   -e LOGCOLOUR=${LOGCOLOUR:-$DEFAULT_LOGCOLOUR} \
   --entrypoint /test/run_tests \
   "$IMAGE" \
