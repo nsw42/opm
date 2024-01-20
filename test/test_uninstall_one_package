@@ -65,9 +65,12 @@ else
   package=$(echo $INSTALLABLE_PACKAGES | cut -d ' ' -f 1)
 
   echo Installing $package >> $LOGFILE
-  $BINDIR/opm install --yes $package > /dev/null 2>&1
-  if ! $BINDIR/opm list 2> /dev/null | grep -q "^${package}\>"; then
+  $BINDIR/opm install --yes $package >> $LOGFILE 2>&1
+  $BINDIR/opm list > $OUT 2> $ERR
+  if ! grep -q "^${package}\>" $OUT; then
     echo Test setup installation of $package failed >> $LOGFILE
+    copy_file_to_log $OUT stdout
+    copy_file_to_log $ERR stderr
     exit $EXIT_TEST_FAILED
   fi
 

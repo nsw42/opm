@@ -76,6 +76,17 @@ elif [ -f /etc/arch-release ]; then
     exit $EXIT_TEST_FAILED
   fi
 
+elif grep -q opensuse /etc/os-release; then
+
+  # The last line of output should be 'All repositories have been refreshed.'
+
+  if [ "$(tail -1 ${OUT}.1)" != "All repositories have been refreshed." ]; then
+    echo "failed to find the expected final line in stdout" >> $LOGFILE
+    copy_file_to_log ${OUT}.1 stdout
+    copy_file_to_log ${ERR}.1 stderr
+    exit $EXIT_TEST_FAILED
+  fi
+
 else
 
   echo unsupported os >> $LOGFILE

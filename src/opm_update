@@ -76,6 +76,15 @@ try_yum() {
   return 1
 }
 
+try_zypper() {
+  if [ -x "$(command -v zypper)" ]; then
+    zypper refresh
+    EXIT_CORE=$?
+    return 0
+  fi
+  return 1
+}
+
 if [ $(uname) = Darwin ]; then
   try_brew "$@" && exit $EXIT_CODE
 else
@@ -84,6 +93,7 @@ else
   try_microdnf "$@" && exit $EXIT_CODE
   try_pacman "$@" && exit $EXIT_CODE
   try_yum "$@" && exit $EXIT_CODE
+  try_zypper "$@" && exit $EXIT_CODE
   try_brew "$@" && exit $EXIT_CODE
 fi
 

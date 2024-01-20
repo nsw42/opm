@@ -27,6 +27,9 @@ else
   elif [ -f /etc/arch-release ]; then
     INSTALLABLE_PACKAGES="less libpng libzip xz"
     INSTALLED_PACKAGES="glibc pacman tar"
+  elif grep -q opensuse /etc/os-release; then
+    INSTALLABLE_PACKAGES="less libpng16-16 libzip5 xz"
+    INSTALLED_PACKAGES="curl glibc rpm"
   else
     echo Unsupported OS found >> $LOGFILE
     exit 1

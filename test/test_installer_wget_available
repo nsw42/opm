@@ -9,8 +9,11 @@
 ERR=$TESTDIR/tmp/$(basename $0).err
 OUT=$TESTDIR/tmp/$(basename $0).out
 
-if [ $(uname) = Darwin -o  -f /etc/redhat-release -o -f /etc/arch-release ]; then
-  echo "curl is provided by the OS, and is used in preference to wget" >> $LOGFILE
+# This next test relies on a clean environment: if curl is already available
+# in the Docker image we test against, then assume that curl will *always*
+# be available on that platform.
+if [ -x "$(command -v curl)" ]; then
+  echo "curl is provided by the OS, and the installer uses it in preference to wget" >> $LOGFILE
   echo "Skipping test" >> $LOGFILE
   exit $EXIT_TEST_SKIPPED
 else
